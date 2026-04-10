@@ -1,11 +1,33 @@
-import { useState } from "react";
-import { BlockEditor } from "@verevoir/editor";
+import { useState, useCallback } from "react";
+import {
+  BlockEditor,
+  LinkSearchProvider,
+  type LinkSearchResult,
+} from "@verevoir/editor";
 import type { BlockDefinition, FieldRecord } from "@verevoir/schema";
 import { SectionsEditor } from "./SectionsEditor";
 
 interface Section {
   _type: string;
   [key: string]: unknown;
+}
+
+/**
+ * A page that the link picker can target. Passed in from the
+ * server-rendered Astro route so we don't need an API endpoint just
+ * for search.
+ *
+ * PROMOTE: this in-memory search pattern (and the matching
+ * LinkSearchProvider wiring) is a clear candidate for the future
+ * @verevoir/admin package — wire it once at the AdminShell level
+ * with a StorageAdapter, every editor below gets a working picker
+ * for free.
+ */
+export interface LinkablePage {
+  id: string;
+  title: string;
+  url: string;
+  blockType: string;
 }
 
 interface EditorIslandProps {
@@ -21,6 +43,13 @@ interface EditorIslandProps {
   hasSections?: boolean;
   /** Initial sections array (passed straight to SectionsEditor) */
   initialSections?: Section[];
+  /**
+   * The full set of pages the LinkField picker can search. Provided
+   * by the server-rendered admin route from the storage adapter.
+   * If empty, the LinkField browse button is hidden (the auto-detect
+   * still works for typed values).
+   */
+  linkablePages?: LinkablePage[];
 }
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -43,11 +72,29 @@ export function EditorIsland({
   block,
   hasSections = false,
   initialSections = [],
+  linkablePages = [],
 }: EditorIslandProps) {
   const [data, setData] = useState<Record<string, unknown>>(initialData);
   const [sections, setSections] = useState<Section[]>(initialSections);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [error, setError] = useState<string | null>(null);
+
+  // In-memory search over the page list — fast, no network round-trip,
+  // case-insensitive substring match on title and url.
+  const linkSearch = useCallback(
+    async (query: string): Promise<LinkSearchResult[]> => {
+      const q = query.trim().toLowerCase();
+      const matches = q
+        ? linkablePages.filter(
+            (p) =>
+              p.title.toLowerCase().includes(q) ||
+              p.url.toLowerCase().includes(q),
+          )
+        : linkablePages;
+      return matches.slice(0, 20);
+    },
+    [linkablePages],
+  );
 
   const handleSave = async () => {
     setStatus("saving");
@@ -74,36 +121,38 @@ export function EditorIsland({
   };
 
   return (
-    <div className="editor-island">
-      <section className="editor-section">
-        <h2 className="editor-section-title">Page details</h2>
-        <BlockEditor block={block} value={data} onChange={setData} />
-      </section>
-
-      {hasSections && (
+    <LinkSearchProvider search={linkSearch}>
+      <div className="editor-island">
         <section className="editor-section">
-          <SectionsEditor sections={sections} onChange={setSections} />
+          <h2 className="editor-section-title">Page details</h2>
+          <BlockEditor block={block} value={data} onChange={setData} />
         </section>
-      )}
 
-      <div className="editor-actions">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={status === "saving"}
-          className="btn btn-primary"
-        >
-          {status === "saving" ? "Saving…" : "Save"}
-        </button>
-        {status === "saved" && (
-          <span className="editor-status editor-status-success">Saved</span>
+        {hasSections && (
+          <section className="editor-section">
+            <SectionsEditor sections={sections} onChange={setSections} />
+          </section>
         )}
-        {status === "error" && (
-          <span className="editor-status editor-status-error">
-            Error: {error}
-          </span>
-        )}
+
+        <div className="editor-actions">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={status === "saving"}
+            className="btn btn-primary"
+          >
+            {status === "saving" ? "Saving…" : "Save"}
+          </button>
+          {status === "saved" && (
+            <span className="editor-status editor-status-success">Saved</span>
+          )}
+          {status === "error" && (
+            <span className="editor-status editor-status-error">
+              Error: {error}
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+    </LinkSearchProvider>
   );
 }

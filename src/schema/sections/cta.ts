@@ -1,4 +1,12 @@
-import { defineBlock, text, richText, select, array, object } from "@verevoir/schema";
+import {
+  defineBlock,
+  text,
+  richText,
+  select,
+  array,
+  object,
+  link,
+} from "@verevoir/schema";
 
 /**
  * Call-to-action section — heading + body + buttons. Smaller than
@@ -27,7 +35,7 @@ export const ctaSection = defineBlock({
           "`actionButton` renders as a filled button. `actionLink` renders as inline text.",
         ),
         label: text("Label").hint("The visible text on the button or link."),
-        url: text("URL").hint(
+        url: link("URL").hint(
           "Full URL (https://…) for external destinations, or a slug (`/about`) for internal pages.",
         ),
         theme: select("Theme", ["primary", "secondary", "accent", "neutral"])

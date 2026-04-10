@@ -41,6 +41,21 @@ const initialSections = hasSections
     ? ((data.sections as Array<{ _type: string; [key: string]: unknown }>) ?? [])
     : [];
 
+// Build the list of pages the LinkField picker can target. Loaded
+// once on the server, passed to the React island as a prop. For a
+// production admin with many pages this should become a paged API
+// endpoint, but in-memory works fine at starter scale.
+const allPages = await storage.list('page');
+const linkablePages = allPages.map((p) => {
+    const pd = p.data as { title?: string; slug?: string };
+    return {
+        id: p.id,
+        title: pd.title ?? '(untitled)',
+        url: pd.slug ?? '/',
+        blockType: 'page',
+    };
+});
+
 const displayName = (data.title as string | undefined) ?? (data.headerTitle as string | undefined) ?? '(untitled)';
 ---
 
@@ -75,6 +90,7 @@ const displayName = (data.title as string | undefined) ?? (data.headerTitle as s
                 block={block}
                 hasSections={hasSections}
                 initialSections={initialSections}
+                linkablePages={linkablePages}
             />
         </main>
     </body>
