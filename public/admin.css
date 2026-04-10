@@ -517,3 +517,186 @@
   color: var(--admin-muted);
   font-family: ui-monospace, "SF Mono", Monaco, monospace;
 }
+
+/* Field hints from @verevoir/editor */
+
+.editor-island .verevoir-field-hint,
+.editor-island [data-field-hint] {
+  margin: 0.25rem 0 0.875rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--admin-muted);
+}
+
+/* Chips array (tag input) */
+
+.editor-island [data-array-display="chips"] [data-chips-container] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  padding: 0.375rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.375rem;
+  background: var(--admin-surface);
+  align-items: center;
+  min-height: 2.25rem;
+}
+
+.editor-island [data-chip] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  background: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.editor-island [data-chip-remove] {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: var(--admin-muted);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.editor-island [data-chip-remove]:hover {
+  color: var(--admin-error);
+}
+
+.editor-island [data-chip-input] {
+  flex: 1;
+  min-width: 8rem;
+  border: none;
+  background: none;
+  padding: 0.125rem;
+  outline: none;
+  font: inherit;
+}
+
+/* Table array (inline editable table) */
+
+.editor-island [data-array-display="table"] {
+  margin-bottom: 1.25rem;
+}
+
+.editor-island [data-array-table] {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.editor-island [data-array-table] th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--admin-muted);
+  background: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.editor-island [data-array-table] td {
+  padding: 0.375rem 0.5rem;
+  border-bottom: 1px solid var(--admin-border);
+  vertical-align: middle;
+}
+
+.editor-island [data-array-table] tr:last-child td {
+  border-bottom: none;
+}
+
+.editor-island [data-array-table] td input,
+.editor-island [data-array-table] td select {
+  width: 100%;
+  margin: 0;
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.editor-island [data-array-table] [data-table-empty] td {
+  text-align: center;
+  color: var(--admin-muted);
+  font-style: italic;
+  padding: 1rem;
+}
+
+.editor-island [data-table-row-actions] {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.editor-island [data-table-row-actions] button {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0 0.125rem;
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--admin-muted);
+}
+
+.editor-island [data-table-row-actions] button:hover:not(:disabled) {
+  background: var(--admin-surface);
+  color: var(--admin-text);
+}
+
+.editor-island [data-table-row-actions] button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.editor-island [data-table-add] {
+  margin-top: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  background: var(--admin-bg);
+  border: 1px dashed var(--admin-border);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  color: var(--admin-muted);
+  font: inherit;
+}
+
+.editor-island [data-table-add]:hover {
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  border-style: solid;
+}
+
+.editor-island [data-table-hints] {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 1rem;
+  background: var(--admin-bg);
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+}
+
+.editor-island [data-table-hints] > div {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.editor-island [data-table-hints] dt {
+  font-weight: 600;
+  color: var(--admin-muted);
+  flex-shrink: 0;
+}
+
+.editor-island [data-table-hints] dd {
+  margin: 0;
+  color: var(--admin-muted);
+}
