@@ -1,9 +1,16 @@
-import { defineBlock, text, richText, select } from "@verevoir/schema";
+import {
+  defineBlock,
+  text,
+  richText,
+  select,
+  boolean,
+  array,
+  object,
+} from "@verevoir/schema";
 
 /**
  * Testimonials section — quote cards from customers/partners.
- * The `items` array of testimonials is preserved on save but not
- * yet editable through the form.
+ * Items render as CardGridArrayField (the author object is nested).
  */
 export const testimonialsSection = defineBlock({
   name: "testimonialsSection",
@@ -20,6 +27,25 @@ export const testimonialsSection = defineBlock({
     ),
     width: select("Width", ["full", "inset"]).hint(
       "`full` runs to the page edges. `inset` adds rounded corners and a max-width container.",
+    ),
+    items: array(
+      "Testimonials",
+      object("Testimonial", {
+        quote: richText("Quote").hint(
+          "The testimonial text. Markdown supported.",
+        ),
+        author: object("Author", {
+          name: text("Name"),
+          title: text("Title").optional(),
+          company: object("Company", {
+            name: text("Company name"),
+          }),
+        }),
+        theme: select("Theme", ["light", "dark", "transparent"]),
+        hasBorder: boolean("Show border"),
+      }),
+    ).hint(
+      "Testimonial quotes. Each item has the quote, author, and an optional company.",
     ),
   },
 });

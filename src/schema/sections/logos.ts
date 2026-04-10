@@ -1,9 +1,16 @@
-import { defineBlock, text, richText, select } from "@verevoir/schema";
+import {
+  defineBlock,
+  text,
+  richText,
+  select,
+  array,
+  object,
+} from "@verevoir/schema";
 
 /**
  * Logos section — animated or static strip of customer/partner logos.
- * The `items` array of logo images is preserved on save but not yet
- * editable through the form.
+ * Items render as CardGridArrayField; the dimensions object is
+ * preserved on save but not modeled here (it's derived metadata).
  */
 export const logosSection = defineBlock({
   name: "logosSection",
@@ -20,6 +27,17 @@ export const logosSection = defineBlock({
     ),
     width: select("Width", ["full", "inset"]).hint(
       "`full` runs to the page edges. `inset` adds rounded corners and a max-width container.",
+    ),
+    items: array(
+      "Logos",
+      object("Logo", {
+        src: text("Image path").hint(
+          "Public path to the logo file (e.g. `/images/logo-acme.svg`).",
+        ),
+        alt: text("Alt text").hint("Used by screen readers and as fallback."),
+      }),
+    ).hint(
+      "Logos to display in the strip. The dimensions metadata is preserved on save but managed automatically.",
     ),
   },
 });
