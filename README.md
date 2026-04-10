@@ -217,16 +217,33 @@ The schema and the rest of the app don't change — only `src/storage.ts`.
 
 ## Deploying
 
-The default build (`npm run build`) targets [Netlify](https://www.netlify.com/) — public pages are static, admin routes are deployed as Netlify functions. To deploy:
+Two modes, **same source tree, no config swap**:
+
+### Mode A — Netlify (admin works)
 
 ```bash
 npm run build
-# Deploy the output via netlify-cli, GitHub integration, or drag-and-drop
+# Deploy via netlify-cli, GitHub integration, or drag-and-drop
 ```
 
-### Static-only deploy (no admin)
+Public pages are prerendered HTML. Admin routes (`/admin`, `/api/admin/*`) are bundled as Netlify functions. Edits made through the admin write through to the storage backend you've configured in `src/storage.ts`.
 
-If you just want a static site (admin won't function), the same `dist/` output deploys to any static host — S3, GCS, Cloudflare Pages, GitHub Pages, etc. Just upload the `dist/` directory and ignore the `.netlify/` function code. The public pages are fully prerendered HTML.
+### Mode B — static export (admin doesn't function)
+
+```bash
+npm run build:static
+# → static-build.tar.gz
+```
+
+Builds the same project, then tarballs just the static portion of the output (`dist/`) into `static-build.tar.gz`. Drop that tarball on any object store — S3, GCS, R2, Cloudflare Pages, GitHub Pages, etc. Public pages work everywhere; admin is unavailable (the function code isn't included).
+
+This is useful when:
+- You want a fully static deploy with no functions / no cold starts
+- You're git-managing content and don't need a runtime editor
+- You want to deploy the same site to multiple hosts (one for production, one as a backup mirror)
+- You want zero hosting cost (object stores are basically free at low traffic)
+
+The trade-off is obvious: no live editing on a static-only deploy. Edit content via the dev server's admin (`npm run dev`), commit `data/*.json` to git, then rebuild and re-export. Or move to Mode A.
 
 ## License
 

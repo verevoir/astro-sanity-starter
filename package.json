@@ -5,6 +5,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:static": "astro build && bash scripts/export-static.sh",
     "preview": "astro preview",
     "astro": "astro"
   },
