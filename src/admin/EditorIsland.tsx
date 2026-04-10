@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import {
   BlockEditor,
   LinkSearchProvider,
+  PreviewFrame,
   type LinkSearchResult,
 } from "@verevoir/editor";
 import type { BlockDefinition, FieldRecord } from "@verevoir/schema";
@@ -50,6 +51,16 @@ interface EditorIslandProps {
    * still works for typed values).
    */
   linkablePages?: LinkablePage[];
+  /**
+   * URL to render in the live preview iframe. Typically the public
+   * URL for the document being edited (e.g. `/` for the home page).
+   * If omitted, no preview pane is shown.
+   *
+   * PROMOTE: live preview pattern is a strong candidate for the
+   * @verevoir/admin toolkit. The toolkit could derive the preview
+   * URL automatically from the block type + slug field.
+   */
+  previewUrl?: string;
 }
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -57,11 +68,12 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 /**
  * Client-side editor wrapper. Renders the @verevoir/editor BlockEditor
  * for schema-modeled fields, plus an optional SectionsEditor for
- * polymorphic page sections.
+ * polymorphic page sections, plus an optional live preview iframe.
  *
  * Save flow: combines the metadata fields with the sections array (and
  * any other passthrough data) into a single payload, POSTs to
- * /api/admin/save, which merges into the existing document.
+ * /api/admin/save, which merges into the existing document. After a
+ * successful save, the preview iframe reloads to reflect the change.
  *
  * Loaded as a React island in admin Astro pages with `client:only="react"`.
  */
@@ -73,11 +85,16 @@ export function EditorIsland({
   hasSections = false,
   initialSections = [],
   linkablePages = [],
+  previewUrl,
 }: EditorIslandProps) {
   const [data, setData] = useState<Record<string, unknown>>(initialData);
   const [sections, setSections] = useState<Section[]>(initialSections);
   const [status, setStatus] = useState<SaveStatus>("idle");
   const [error, setError] = useState<string | null>(null);
+  // Bumping this counter triggers a fresh iframe mount, forcing the
+  // preview to reload from the server. Cleaner than cache busters or
+  // .reload() calls — React handles the lifecycle.
+  const [previewVersion, setPreviewVersion] = useState(0);
 
   // In-memory search over the page list — fast, no network round-trip,
   // case-insensitive substring match on title and url.
@@ -114,43 +131,65 @@ export function EditorIsland({
       }
       setStatus("saved");
       setTimeout(() => setStatus("idle"), 2000);
+      // Reload the preview iframe to show the saved changes.
+      if (previewUrl) setPreviewVersion((v) => v + 1);
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : String(err));
     }
   };
 
+  const editor = (
+    <div className="editor-island">
+      <section className="editor-section">
+        <h2 className="editor-section-title">Page details</h2>
+        <BlockEditor block={block} value={data} onChange={setData} />
+      </section>
+
+      {hasSections && (
+        <section className="editor-section">
+          <SectionsEditor sections={sections} onChange={setSections} />
+        </section>
+      )}
+
+      <div className="editor-actions">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={status === "saving"}
+          className="btn btn-primary"
+        >
+          {status === "saving" ? "Saving…" : "Save"}
+        </button>
+        {status === "saved" && (
+          <span className="editor-status editor-status-success">Saved</span>
+        )}
+        {status === "error" && (
+          <span className="editor-status editor-status-error">
+            Error: {error}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  if (!previewUrl) {
+    return <LinkSearchProvider search={linkSearch}>{editor}</LinkSearchProvider>;
+  }
+
   return (
     <LinkSearchProvider search={linkSearch}>
-      <div className="editor-island">
-        <section className="editor-section">
-          <h2 className="editor-section-title">Page details</h2>
-          <BlockEditor block={block} value={data} onChange={setData} />
-        </section>
-
-        {hasSections && (
-          <section className="editor-section">
-            <SectionsEditor sections={sections} onChange={setSections} />
-          </section>
-        )}
-
-        <div className="editor-actions">
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={status === "saving"}
-            className="btn btn-primary"
-          >
-            {status === "saving" ? "Saving…" : "Save"}
-          </button>
-          {status === "saved" && (
-            <span className="editor-status editor-status-success">Saved</span>
-          )}
-          {status === "error" && (
-            <span className="editor-status editor-status-error">
-              Error: {error}
-            </span>
-          )}
+      <div className="editor-with-preview">
+        <div className="editor-pane">{editor}</div>
+        <div className="preview-pane">
+          <PreviewFrame defaultViewport="Desktop" className="preview-frame">
+            <iframe
+              key={previewVersion}
+              src={previewUrl}
+              title="Live preview"
+              className="preview-iframe"
+            />
+          </PreviewFrame>
         </div>
       </div>
     </LinkSearchProvider>
