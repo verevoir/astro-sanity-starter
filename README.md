@@ -9,9 +9,9 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). That's it — no accounts, no environment variables, no external services.
+Open [http://localhost:4321](http://localhost:4321). That's it — no accounts, no environment variables, no external services.
 
-The admin lives at [http://localhost:3000/admin](http://localhost:3000/admin).
+The admin lives at [http://localhost:4321/admin](http://localhost:4321/admin).
 
 ## What's Inside
 
