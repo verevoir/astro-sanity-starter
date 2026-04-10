@@ -1,8 +1,10 @@
 ---
+import { AdminShell, DocumentEditor } from '@verevoir/admin';
+import type { LinkablePage } from '@verevoir/admin';
+import '@verevoir/admin/styles/admin.css';
 import { storage } from '@/storage';
 import { ensureSeeded } from '@data/init';
-import { blocks } from '@schema/registry';
-import { EditorIsland } from '@/admin/EditorIsland';
+import { blocks, sections } from '@schema/registry';
 
 export const prerender = false;
 
@@ -14,8 +16,8 @@ if (!blockType || !id) {
     return Astro.redirect('/admin');
 }
 
-const block = blocks[blockType];
-if (!block) {
+const entry = blocks[blockType];
+if (!entry) {
     return new Response(`Unknown block type: ${blockType}`, { status: 404 });
 }
 
@@ -28,10 +30,9 @@ const data = doc.data as Record<string, unknown>;
 
 // Extract just the schema-modeled fields for the metadata editor.
 // Polymorphic fields (e.g. `sections` on a page) are handled
-// separately by SectionsEditor inside EditorIsland. Other fields
-// not covered by either are preserved on save via the merge in
-// /api/admin/save.
-const schemaFields = Object.keys(block.fields);
+// separately by SectionsEditor inside DocumentEditor. Other fields
+// not covered by either are preserved on save via the merge.
+const schemaFields = Object.keys(entry.block.fields);
 const editorData = Object.fromEntries(
     schemaFields.map((key) => [key, data[key]]),
 );
@@ -41,12 +42,9 @@ const initialSections = hasSections
     ? ((data.sections as Array<{ _type: string; [key: string]: unknown }>) ?? [])
     : [];
 
-// Build the list of pages the LinkField picker can target. Loaded
-// once on the server, passed to the React island as a prop. For a
-// production admin with many pages this should become a paged API
-// endpoint, but in-memory works fine at starter scale.
+// Build the list of pages the LinkField picker can target.
 const allPages = await storage.list('page');
-const linkablePages = allPages.map((p) => {
+const linkablePages: LinkablePage[] = allPages.map((p) => {
     const pd = p.data as { title?: string; slug?: string };
     return {
         id: p.id,
@@ -56,52 +54,47 @@ const linkablePages = allPages.map((p) => {
     };
 });
 
-// Live preview URL — only set for documents that have a public
-// representation. Page documents preview their own slug; site config
-// has no single page to preview, so we omit it.
-const previewUrl =
-    blockType === 'page'
-        ? ((data.slug as string | undefined) ?? '/')
-        : undefined;
+// Live preview URL via the entry's `preview` function (if defined).
+const previewUrl = entry.preview ? entry.preview(data) : undefined;
 const hasPreview = previewUrl !== undefined;
 
-const displayName = (data.title as string | undefined) ?? (data.headerTitle as string | undefined) ?? '(untitled)';
+const displayName =
+    (data.title as string | undefined) ??
+    (data.headerTitle as string | undefined) ??
+    '(untitled)';
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Edit {displayName} · Verevoir Admin</title>
-        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="/admin.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap"
+            rel="stylesheet"
+        />
     </head>
-    <body class={hasPreview ? 'admin-body admin-body-wide' : 'admin-body'}>
-        <header class="admin-header">
-            <div class="admin-header-inner">
-                <h1>
-                    <a href="/admin" class="admin-back">← Admin</a>
-                    <span class="admin-divider">/</span>
-                    {blockType}
-                    <span class="admin-divider">/</span>
-                    {displayName}
-                </h1>
-            </div>
-        </header>
-
-        <main class={hasPreview ? 'admin-main admin-main-wide' : 'admin-main'}>
-            <EditorIsland
+    <body>
+        <AdminShell
+            title="Verevoir Admin"
+            wide={hasPreview}
+            breadcrumbs={[
+                { label: entry.label ?? blockType, href: '/admin' },
+                { label: displayName },
+            ]}
+        >
+            <DocumentEditor
                 client:only="react"
                 id={id}
                 blockType={blockType}
                 initialData={editorData}
-                block={block}
-                hasSections={hasSections}
+                block={entry.block}
+                previewUrl={previewUrl}
+                sectionTypes={hasSections ? sections : undefined}
                 initialSections={initialSections}
                 linkablePages={linkablePages}
-                previewUrl={previewUrl}
             />
-        </main>
+        </AdminShell>
     </body>
 </html>
