@@ -1,9 +1,11 @@
+import { storage } from "../storage";
 import { seed } from "../seed";
 
-let seeded = false;
+let initialized = false;
 
 export async function ensureSeeded() {
-  if (seeded) return;
+  if (initialized) return;
+  await storage.connect();
   await seed();
-  seeded = true;
+  initialized = true;
 }

@@ -4,6 +4,10 @@
   "exclude": ["dist"],
   "compilerOptions": {
     "baseUrl": ".",
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom", "dom.iterable"],
     "paths": {
       "@pages/*": ["src/pages/*"],
       "@components/*": ["src/components/*"],

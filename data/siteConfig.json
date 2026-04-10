@@ -1,0 +1,46 @@
+[
+  {
+    "id": "e2d22107-df1d-4715-9ab2-1133f00e03fd",
+    "blockType": "siteConfig",
+    "data": {
+      "favicon": {
+        "src": "/favicon.svg"
+      },
+      "header": {
+        "title": "Verevoir Starter",
+        "logo": {
+          "src": "/images/logo.svg",
+          "alt": "Verevoir Starter",
+          "dimensions": {
+            "width": 140,
+            "height": 32
+          }
+        },
+        "navLinks": [
+          {
+            "_type": "actionLink",
+            "label": "Features",
+            "url": "#features"
+          },
+          {
+            "_type": "actionLink",
+            "label": "Testimonials",
+            "url": "#testimonials"
+          },
+          {
+            "_type": "actionButton",
+            "label": "Get Started",
+            "url": "https://verevoir.io",
+            "theme": "primary"
+          }
+        ]
+      },
+      "footer": {
+        "text": "Built with [Astro](https://astro.build) and [Verevoir](https://verevoir.io). Open source on [GitHub](https://github.com/verevoir)."
+      },
+      "titleSuffix": "Verevoir Starter"
+    },
+    "createdAt": "2026-04-10T04:50:45.357Z",
+    "updatedAt": "2026-04-10T04:50:45.357Z"
+  }
+]
