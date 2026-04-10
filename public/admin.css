@@ -1,0 +1,259 @@
+:root {
+  --admin-bg: #f8fafc;
+  --admin-surface: #ffffff;
+  --admin-border: #e2e8f0;
+  --admin-text: #0f172a;
+  --admin-muted: #64748b;
+  --admin-accent: #ffae9c;
+  --admin-accent-text: #171227;
+  --admin-success: #10b981;
+  --admin-error: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.admin-body {
+  margin: 0;
+  font-family:
+    "Mulish", system-ui, -apple-system, sans-serif;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  line-height: 1.5;
+}
+
+.admin-header {
+  background: var(--admin-surface);
+  border-bottom: 1px solid var(--admin-border);
+  padding: 1rem 0;
+}
+
+.admin-header-inner {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-back {
+  color: var(--admin-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.admin-back:hover {
+  text-decoration: underline;
+}
+
+.admin-divider {
+  color: var(--admin-muted);
+  font-weight: 400;
+}
+
+.admin-link {
+  color: var(--admin-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.admin-link:hover {
+  color: var(--admin-text);
+}
+
+.admin-main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.admin-section {
+  margin-bottom: 2.5rem;
+}
+
+.admin-section h2 {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--admin-muted);
+}
+
+.admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.admin-list li + li {
+  border-top: 1px solid var(--admin-border);
+}
+
+.admin-list-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.1s;
+}
+
+.admin-list-link:hover {
+  background: var(--admin-bg);
+}
+
+.admin-list-title {
+  font-weight: 500;
+}
+
+.admin-list-meta {
+  font-size: 0.8125rem;
+  color: var(--admin-muted);
+  font-family: ui-monospace, "SF Mono", Monaco, monospace;
+}
+
+.admin-muted {
+  color: var(--admin-muted);
+  font-style: italic;
+}
+
+.admin-note {
+  margin-top: 2rem;
+  padding: 0.875rem 1rem;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--admin-muted);
+}
+
+.admin-note code {
+  background: var(--admin-bg);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+/* Editor island */
+
+.editor-island {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.editor-island label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+  margin-top: 1rem;
+  color: var(--admin-text);
+}
+
+.editor-island label:first-child {
+  margin-top: 0;
+}
+
+.editor-island input[type="text"],
+.editor-island input[type="number"],
+.editor-island input[type="url"],
+.editor-island input[type="email"],
+.editor-island textarea,
+.editor-island select {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 0.375rem;
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.editor-island textarea {
+  min-height: 6rem;
+  font-family: ui-monospace, "SF Mono", Monaco, monospace;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.editor-island input:focus,
+.editor-island textarea:focus,
+.editor-island select:focus {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: -1px;
+  border-color: var(--admin-accent);
+}
+
+.editor-island input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.editor-island .btn,
+.editor-island button.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.editor-island .btn-primary {
+  background: var(--admin-accent);
+  color: var(--admin-accent-text);
+}
+
+.editor-island .btn-primary:hover:not(:disabled) {
+  filter: brightness(0.95);
+}
+
+.editor-island .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.editor-status {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.editor-status-success {
+  color: var(--admin-success);
+}
+
+.editor-status-error {
+  color: var(--admin-error);
+}

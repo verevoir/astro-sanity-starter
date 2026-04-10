@@ -1,0 +1,74 @@
+---
+import { storage } from '@/storage';
+import { ensureSeeded } from '@data/init';
+
+export const prerender = false;
+
+await ensureSeeded();
+
+const pages = await storage.list('page');
+const siteConfigs = await storage.list('siteConfig');
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Admin · Verevoir Starter</title>
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/admin.css" />
+    </head>
+    <body class="admin-body">
+        <header class="admin-header">
+            <div class="admin-header-inner">
+                <h1>Verevoir Admin</h1>
+                <a href="/" class="admin-link">View site →</a>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <section class="admin-section">
+                <h2>Pages</h2>
+                {pages.length === 0 ? (
+                    <p class="admin-muted">No pages yet.</p>
+                ) : (
+                    <ul class="admin-list">
+                        {pages.map((doc) => {
+                            const data = doc.data as { title?: string; slug?: string };
+                            return (
+                                <li>
+                                    <a href={`/admin/page/${doc.id}`} class="admin-list-link">
+                                        <span class="admin-list-title">{data.title ?? '(untitled)'}</span>
+                                        <span class="admin-list-meta">{data.slug ?? '/'}</span>
+                                    </a>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </section>
+
+            <section class="admin-section">
+                <h2>Site Configuration</h2>
+                {siteConfigs.length === 0 ? (
+                    <p class="admin-muted">No site config yet.</p>
+                ) : (
+                    <ul class="admin-list">
+                        {siteConfigs.map((doc) => {
+                            const data = doc.data as { headerTitle?: string };
+                            return (
+                                <li>
+                                    <a href={`/admin/siteConfig/${doc.id}`} class="admin-list-link">
+                                        <span class="admin-list-title">{data.headerTitle ?? '(unnamed)'}</span>
+                                        <span class="admin-list-meta">singleton</span>
+                                    </a>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </section>
+        </main>
+    </body>
+</html>

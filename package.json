@@ -12,15 +12,16 @@
     "@astrojs/netlify": "^7.0.6",
     "@astrojs/react": "^5.0.3",
     "@tailwindcss/vite": "^4.2.2",
-    "@verevoir/schema": "^1.0.0",
-    "@verevoir/storage": "^1.0.0",
+    "@verevoir/editor": "^1.1.0",
+    "@verevoir/schema": "^1.1.0",
+    "@verevoir/storage": "^1.1.0",
     "astro": "^6.1.5",
     "astro-icon": "^1.1.5",
     "marked": "^18.0.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "tailwindcss": "^4.2.2",
-    "zod": "^3.25.76"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",

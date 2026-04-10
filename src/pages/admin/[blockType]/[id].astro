@@ -1,0 +1,75 @@
+---
+import { storage } from '@/storage';
+import { ensureSeeded } from '@data/init';
+import { blocks } from '@schema/registry';
+import { EditorIsland } from '@/admin/EditorIsland';
+
+export const prerender = false;
+
+await ensureSeeded();
+
+const { blockType, id } = Astro.params;
+
+if (!blockType || !id) {
+    return Astro.redirect('/admin');
+}
+
+const block = blocks[blockType];
+if (!block) {
+    return new Response(`Unknown block type: ${blockType}`, { status: 404 });
+}
+
+const doc = await storage.get(id);
+if (!doc || doc.blockType !== blockType) {
+    return new Response('Document not found', { status: 404 });
+}
+
+const data = doc.data as Record<string, unknown>;
+
+// Extract just the schema-modeled fields for the editor.
+// Other fields (e.g. `sections` on a page) are preserved on save
+// via the merge in /api/admin/save.
+const schemaFields = Object.keys(block.fields);
+const editorData = Object.fromEntries(
+    schemaFields.map((key) => [key, data[key]]),
+);
+
+const displayName = (data.title as string | undefined) ?? (data.headerTitle as string | undefined) ?? '(untitled)';
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Edit {displayName} · Verevoir Admin</title>
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/admin.css" />
+    </head>
+    <body class="admin-body">
+        <header class="admin-header">
+            <div class="admin-header-inner">
+                <h1>
+                    <a href="/admin" class="admin-back">← Admin</a>
+                    <span class="admin-divider">/</span>
+                    {blockType}
+                    <span class="admin-divider">/</span>
+                    {displayName}
+                </h1>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <EditorIsland
+                client:only="react"
+                id={id}
+                blockType={blockType}
+                initialData={editorData}
+                block={block}
+            />
+            <p class="admin-note">
+                Note: only schema-modeled fields are editable here. Other fields (e.g. <code>sections</code>) are preserved on save and remain part of the document.
+            </p>
+        </main>
+    </body>
+</html>

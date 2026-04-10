@@ -11,7 +11,13 @@ interface Props {
 
 const { src, width, height, alt, class: className } = Astro.props;
 
-const format = src?.includes('.svg') ? 'svg' : 'webp';
+const isSvg = src?.includes('.svg');
 ---
 
-<Image src={src} width={width} height={height} alt={alt || ''} format={format} class:list={className} />
+{
+    isSvg ? (
+        <img src={src} width={width} height={height} alt={alt || ''} class={className} />
+    ) : (
+        <Image src={src} width={width!} height={height!} alt={alt || ''} format="webp" class:list={className} />
+    )
+}
