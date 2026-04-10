@@ -13,7 +13,7 @@ const { title, logo, navLinks } = Astro.props;
         {
             logo.src ? (
                 <a class="flex items-center" href="/">
-                    <ResponsiveImage _id={logo._id} src={logo.src} width={logo.dimensions?.width} height={logo.dimensions?.height} alt={logo.alt} />
+                    <ResponsiveImage src={logo.src} width={logo.dimensions?.width} height={logo.dimensions?.height} alt={logo.alt} />
                 </a>
             ) : (
                 <a class="text-xl font-bold sm:text-2xl" href="/">

@@ -1,95 +1,66 @@
-# Astro Sanity Starter
+# Astro + Verevoir Starter
 
-[Live Demo](https://astro-sanity-starter-demo.netlify.app/)
+A minimal Astro starter powered by [Verevoir](https://verevoir.io) — composable TypeScript libraries for structured content. No hosted backend, no API keys, no vendor lock-in.
 
-A minimal Astro and Sanity CMS starter template for building modern, content-driven websites.
+## Quick Start
 
-| Prerequisites                                                                |
-| :--------------------------------------------------------------------------- |
-| [Node.js](https://nodejs.org/) v20.+                                         |
-| (optional) [nvm](https://github.com/nvm-sh/nvm) for Node version management. |
-
-## Getting Started
-
-Create local project from this repo and run:
-
-```txt
+```bash
 npm install
-```
-
-### Sign Into Sanity
-
-If you are not already signed into Sanity via the CLI, install the CLI package and then run the login command.
-
-```txt
-npm install -g @sanity/cli
-sanity login
-```
-
-This will open a browser and walk you through the authentication process.
-
-### Import Content
-
-Once authenticated, you'll be able to create a Sanity project and import content.
-
-```txt
-npm run create-project
-```
-
-_Note: You may want to sign into Sanity in the browser and rename your project._
-
-Once the project exists and you've set the environment variables, you can import the content.
-
-```txt
-npm run import {projectId}
-```
-
-Replace `{projectId}` with the project ID output from the previous command.
-
-### Store Sanity Values
-
-Sign into Sanity to create an editor token, navigate to the following address (replace the `SANITY_PROJECT_ID` with your project ID) `https://www.sanity.io/manage/personal/project/SANITY_PROJECT_ID/api#tokens`. Then create `.env` file in you repo, copy & paste the following environment variables into the file and set their values.
-
-```txt
-SANITY_PROJECT_ID="..."
-SANITY_DATASET="..."
-SANITY_TOKEN="..."
-```
-
-### Run Sanity Studio
-
-Sanity Studio code exists for this project in the `studio` directory. First, install the dependencies in this directory.
-
-```txt
-cd studio
-npm install
-```
-
-Then create a `.env` file in the `studio` directory with the following environment variables and set their values:
-
-```txt
-SANITY_STUDIO_PROJECT_ID="..."
-SANITY_STUDIO_DATASET="..."
-```
-
-Then run the studio locally.
-
-```txt
-sanity dev
-```
-
-If you want to see the content, you can open your browser and navigate to localhost:3333.
-
-### Start Development Server
-
-Then you can run the Astro.js development server in root directory:
-
-```txt
 npm run dev
 ```
 
-Open your browser and navigate to `http://localhost:3000` to see your site.
+Open [http://localhost:3000](http://localhost:3000). That's it — no accounts, no environment variables, no external services.
 
-## Support
+## What's Inside
 
-If you get stuck along the way, get help in our [support forums](https://answers.netlify.com/).
+A marketing site with composable page sections, all content-managed through Verevoir's schema engine and storage adapter:
+
+- **Hero** — large heading, markdown body, call-to-action buttons
+- **Cards** — grid of feature cards with badges, images, and CTAs
+- **Logos** — animated logo strip with configurable motion
+- **Testimonials** — quote cards with author info
+- **CTA** — call-to-action section with heading and buttons
+
+### Tech Stack
+
+- [Astro](https://astro.build) — static site generation
+- [Tailwind CSS 4](https://tailwindcss.com) + [DaisyUI 5](https://daisyui.com) — styling and components
+- [@verevoir/schema](https://www.npmjs.com/package/@verevoir/schema) — content model definitions
+- [@verevoir/storage](https://www.npmjs.com/package/@verevoir/storage) — persistence (MemoryAdapter for dev)
+
+## How It Works
+
+1. **Content models** are defined in `src/schema/` using `defineBlock()` from `@verevoir/schema`
+2. **Sample content** is seeded into a `MemoryAdapter` at startup via `src/seed.ts`
+3. **Data fetching** uses `storage.list()` and `storage.get()` — no query language, no API calls
+4. **Astro components** render each section type with Tailwind/DaisyUI styling
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/schema/` | Verevoir block definitions (content types) |
+| `src/storage.ts` | MemoryAdapter singleton |
+| `src/seed.ts` | Sample content — edit this to change what's on the site |
+| `src/data/` | Data fetching layer (StorageAdapter calls) |
+| `src/pages/[...slug].astro` | Dynamic page routing |
+| `src/components/` | Astro components for each section type |
+
+## Customising Content
+
+Edit `src/seed.ts` to change the site content. Add new pages, modify sections, update copy. The MemoryAdapter reseeds on every dev server restart, so changes appear immediately.
+
+## Going to Production
+
+The MemoryAdapter is perfect for development and static sites. For a production CMS with persistent storage:
+
+1. Install `pg` and configure a PostgreSQL database
+2. Swap `MemoryAdapter` for `PostgresAdapter` in `src/storage.ts`
+3. Add `@verevoir/editor` for a content editing UI
+4. Move seed data into the database
+
+See the [Verevoir documentation](https://verevoir.io) for guides on storage adapters, editors, and deployment.
+
+## License
+
+MIT

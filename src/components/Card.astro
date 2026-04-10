@@ -19,7 +19,7 @@ const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: cl
     {
         image && image.src && (
             <figure>
-                <ResponsiveImage _id={image._id} src={image.src} width={image.dimensions?.width} height={image.dimensions?.height} alt={image.alt} />
+                <ResponsiveImage src={image.src} width={image.dimensions?.width} height={image.dimensions?.height} alt={image.alt} />
             </figure>
         )
     }

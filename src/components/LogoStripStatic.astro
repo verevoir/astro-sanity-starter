@@ -14,7 +14,7 @@ const { items, class: className } = Astro.props;
     {
         items.map((logo) => {
             return logo.src ? (
-                <ResponsiveImage _id={logo._id} src={logo.src} width={logo.dimensions?.width} height={logo.dimensions?.height} alt={logo.alt} />
+                <ResponsiveImage src={logo.src} width={logo.dimensions?.width} height={logo.dimensions?.height} alt={logo.alt} />
             ) : null;
         })
     }

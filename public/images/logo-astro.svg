@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <path d="M14 8 L22 32 L30 8 L26 8 L22 24 L18 8 Z" fill="#ff5d01"/>
+  <circle cx="22" cy="28" r="3" fill="#ff5d01"/>
+  <text x="42" y="26" font-family="system-ui, sans-serif" font-size="14" fill="currentColor">Astro</text>
+</svg>

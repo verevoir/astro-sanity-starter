@@ -7,28 +7,31 @@ import Hero from '@components/Hero.astro';
 import Logos from '@components/Logos.astro';
 import Testimonials from '@components/Testimonials.astro';
 import { fetchData, getPageById } from '@data/page';
+import { ensureSeeded } from '@data/init';
+
+await ensureSeeded();
 
 export async function getStaticPaths() {
+    await ensureSeeded();
     const data = await fetchData();
     return data.map((page: Page) => {
-        const slug = page.slug.current === '/' ? undefined : page.slug.current;
+        const slug = page.slug === '/' ? undefined : page.slug;
         return {
             params: { slug },
-            props: { id: page._id }
+            props: { id: page.id }
         };
     });
 }
 
 const { id } = Astro.props;
-const pages = await getPageById(id);
-const page: Page = pages.length ? pages[0] : null;
+const page = await getPageById(id) as Page | null;
 
 const { title, sections, metaTitle, metaDescription, socialImage } = page || {};
 
 const componentMap = {
-    cardsSection: Cards,
-    ctaSection: Cta,
     heroSection: Hero,
+    ctaSection: Cta,
+    cardsSection: Cards,
     logosSection: Logos,
     testimonialsSection: Testimonials
 };
@@ -41,7 +44,7 @@ const componentMap = {
                 {sections?.length &&
                     sections.map((section) => {
                         const Component = componentMap[section._type];
-                        return <Component {...section} />;
+                        return Component ? <Component {...section} /> : null;
                     })}
             </div>
         </Layout>

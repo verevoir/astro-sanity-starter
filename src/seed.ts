@@ -1,0 +1,244 @@
+import { storage } from "./storage";
+
+export async function seed() {
+  const existing = await storage.list("siteConfig");
+  if (existing.length > 0) return;
+
+  // Site config — matches the shape Layout.astro expects
+  await storage.create("siteConfig", {
+    favicon: { src: "/favicon.svg" },
+    header: {
+      title: "Verevoir Starter",
+      logo: {
+        src: "/images/logo.svg",
+        alt: "Verevoir Starter",
+        dimensions: { width: 140, height: 32 },
+      },
+      navLinks: [
+        { _type: "actionLink", label: "Features", url: "#features" },
+        { _type: "actionLink", label: "Testimonials", url: "#testimonials" },
+        {
+          _type: "actionButton",
+          label: "Get Started",
+          url: "https://verevoir.io",
+          theme: "primary",
+        },
+      ],
+    },
+    footer: {
+      text: "Built with [Astro](https://astro.build) and [Verevoir](https://verevoir.io). Open source on [GitHub](https://github.com/verevoir).",
+    },
+    titleSuffix: "Verevoir Starter",
+  });
+
+  // Home page with composable sections
+  await storage.create("page", {
+    title: "Home",
+    slug: "/",
+    addTitleSuffix: true,
+    metaTitle: "Verevoir — Content, Commerce & Editing as Composable Libraries",
+    metaDescription:
+      "A lightweight alternative to monolithic CMS platforms. You own the database, the deployment, and the data.",
+    sections: [
+      // Hero
+      {
+        _type: "heroSection",
+        heading: "Your content, your database, your rules",
+        body: "Verevoir is a set of composable TypeScript libraries for structured content, commerce, and editing. No hosted backend, no vendor lock-in — just **npm packages** in your app.",
+        cta: [
+          {
+            _type: "actionButton",
+            label: "Get Started",
+            url: "https://verevoir.io",
+            theme: "primary",
+          },
+          {
+            _type: "actionLink",
+            label: "View on GitHub",
+            url: "https://github.com/verevoir",
+          },
+        ],
+        theme: "dark",
+        width: "full",
+      },
+
+      // Features cards
+      {
+        _type: "cardsSection",
+        heading: "Why Verevoir?",
+        body: "Everything you need to build content-driven applications, without the platform tax.",
+        columns: "three",
+        items: [
+          {
+            heading: "TypeScript-First Schemas",
+            body: "Define content shapes with `defineBlock()`. Get validators, types, and editor hints — all from one definition.",
+            badge: { label: "Schema Engine", theme: "primary" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+          {
+            heading: "Any Database",
+            body: "PostgreSQL today, SQLite tomorrow. The `StorageAdapter` interface means you pick the database — and you can switch.",
+            badge: { label: "Storage", theme: "secondary" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+          {
+            heading: "Drop-In Editor",
+            body: "Lightweight React components for content editing. Rich text, field validation, block forms — ready to embed in your admin UI.",
+            badge: { label: "Editor", theme: "accent" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+          {
+            heading: "Auth & Access Control",
+            body: "Google OAuth, Apple Sign-In, OIDC, API keys. Role-based policies and workflow state machines — all standalone.",
+            badge: { label: "Access", theme: "primary" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+          {
+            heading: "Commerce Built In",
+            body: "Products, baskets, orders, subscriptions. Pluggable pricing and tax engines with sensible defaults. Stripe adapter included.",
+            badge: { label: "Commerce", theme: "secondary" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+          {
+            heading: "Zero Lock-In",
+            body: "Every package works standalone. Adopt one, adopt all — your call. No all-or-nothing, no migration cliff.",
+            badge: { label: "Philosophy", theme: "accent" },
+            theme: "light",
+            textAlign: "center",
+            hasBorder: true,
+          },
+        ],
+        theme: "light",
+        width: "full",
+      },
+
+      // Logos
+      {
+        _type: "logosSection",
+        heading: "Built on standards you know",
+        items: [
+          {
+            src: "/images/logo-typescript.svg",
+            alt: "TypeScript",
+            dimensions: { width: 120, height: 40 },
+          },
+          {
+            src: "/images/logo-react.svg",
+            alt: "React",
+            dimensions: { width: 120, height: 40 },
+          },
+          {
+            src: "/images/logo-nextjs.svg",
+            alt: "Next.js",
+            dimensions: { width: 120, height: 40 },
+          },
+          {
+            src: "/images/logo-astro.svg",
+            alt: "Astro",
+            dimensions: { width: 120, height: 40 },
+          },
+          {
+            src: "/images/logo-postgres.svg",
+            alt: "PostgreSQL",
+            dimensions: { width: 120, height: 40 },
+          },
+          {
+            src: "/images/logo-stripe.svg",
+            alt: "Stripe",
+            dimensions: { width: 120, height: 40 },
+          },
+        ],
+        motion: "moveToLeft",
+        theme: "light",
+        width: "full",
+      },
+
+      // Testimonials
+      {
+        _type: "testimonialsSection",
+        heading: "What developers are saying",
+        columns: "two",
+        items: [
+          {
+            quote:
+              '"Switched from Sanity to Verevoir in a weekend. Same content models, but now I own the database and the deploy. No more usage-based pricing surprises."',
+            author: {
+              name: "Alex Chen",
+              title: "Full-Stack Developer",
+              company: { name: "Indie Studio" },
+            },
+            theme: "light",
+            hasBorder: true,
+          },
+          {
+            quote:
+              '"The schema engine is brilliant — define once, get TypeScript types, validation, and editor UI for free. It\'s what I always wanted from a headless CMS."',
+            author: {
+              name: "Sarah Mitchell",
+              title: "Frontend Architect",
+              company: { name: "Scale Labs" },
+            },
+            theme: "light",
+            hasBorder: true,
+          },
+          {
+            quote:
+              '"Commerce, bookings, content — all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple."',
+            author: {
+              name: "James Park",
+              title: "CTO",
+              company: { name: "EventFlow" },
+            },
+            theme: "light",
+            hasBorder: true,
+          },
+          {
+            quote:
+              '"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box — accounts, commerce, stripe adapter. Shipped in days, not weeks."',
+            author: {
+              name: "Maria Santos",
+              title: "Lead Engineer",
+              company: { name: "Launchpad" },
+            },
+            theme: "light",
+            hasBorder: true,
+          },
+        ],
+        theme: "dark",
+        width: "full",
+      },
+
+      // CTA
+      {
+        _type: "ctaSection",
+        heading: "Ready to own your stack?",
+        body: "Verevoir is open source and free to use. Start with one package, adopt more as you need them.",
+        cta: [
+          {
+            _type: "actionButton",
+            label: "Read the Docs",
+            url: "https://verevoir.io",
+            theme: "primary",
+          },
+          {
+            _type: "actionLink",
+            label: "Browse Packages on npm",
+            url: "https://www.npmjs.com/org/verevoir",
+          },
+        ],
+        theme: "light",
+        width: "inset",
+      },
+    ],
+  });
+}
