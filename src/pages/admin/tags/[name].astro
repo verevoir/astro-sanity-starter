@@ -1,0 +1,47 @@
+---
+import { loadAdminGroups, loadTagDetail } from "@verevoir/admin/server";
+import "@verevoir/admin/styles/admin.css";
+import "@/styles/admin-theme.css";
+import { storage } from "@/storage";
+import { ensureSeeded } from "@data/init";
+import { blocks } from "@schema/registry";
+import { AdminTagSchedulerIsland } from "@/admin/AdminTagSchedulerIsland";
+
+export const prerender = false;
+
+await ensureSeeded();
+
+const { name } = Astro.params;
+if (!name) return Astro.redirect("/admin/tags");
+
+const tag = decodeURIComponent(name);
+
+const [groups, documents] = await Promise.all([
+    loadAdminGroups({ storage, blocks }),
+    loadTagDetail({ storage, blocks, tag }),
+]);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Tag: {tag} · Verevoir Admin</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <AdminTagSchedulerIsland
+            client:only="react"
+            groups={groups}
+            basePath="/admin"
+            currentPath={Astro.url.pathname}
+            tag={tag}
+            documents={documents}
+            bulkPublishUrl="/api/admin/bulk-publish"
+        />
+    </body>
+</html>

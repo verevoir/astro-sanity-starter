@@ -1,0 +1,40 @@
+---
+import { loadAdminGroups, loadTagsSummary } from "@verevoir/admin/server";
+import "@verevoir/admin/styles/admin.css";
+import "@/styles/admin-theme.css";
+import { storage } from "@/storage";
+import { ensureSeeded } from "@data/init";
+import { blocks } from "@schema/registry";
+import { AdminTagsIsland } from "@/admin/AdminTagsIsland";
+
+export const prerender = false;
+
+await ensureSeeded();
+
+const [groups, tags] = await Promise.all([
+    loadAdminGroups({ storage, blocks }),
+    loadTagsSummary({ storage, blocks }),
+]);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Tags · Verevoir Admin</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <AdminTagsIsland
+            client:only="react"
+            groups={groups}
+            basePath="/admin"
+            currentPath={Astro.url.pathname}
+            tags={tags}
+        />
+    </body>
+</html>

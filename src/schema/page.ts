@@ -1,4 +1,5 @@
 import { defineContentBlock } from "@verevoir/schema";
+import { publishFields, tagsField } from "@verevoir/editor";
 
 /**
  * The starter's page block. Uses `defineContentBlock` so the
@@ -11,12 +12,17 @@ import { defineContentBlock } from "@verevoir/schema";
  * they're stored on `data.sections` as a discriminated-union
  * array and edited by the admin's SectionsEditor outside the
  * schema validator.
+ *
+ * publishFields + tagsField augment the block with workflow state
+ * (draft/published/archived), a publish window (publishFrom /
+ * publishTo as UTC ISO strings, edited via the smart datetime
+ * control), and a tags array used by the tag scheduler to apply a
+ * start/end window across many pages at once.
  */
 export const page = defineContentBlock({
   name: "page",
   fields: {
-    // No author-specific fields yet — page content is the
-    // sections array, handled outside the schema. Add custom
-    // fields here as needed (e.g. `theme`, `layout`, etc.).
+    ...publishFields(),
+    ...tagsField(),
   },
 });
