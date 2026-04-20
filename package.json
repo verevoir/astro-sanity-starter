@@ -13,9 +13,9 @@
     "@astrojs/netlify": "^7.0.6",
     "@astrojs/react": "^5.0.3",
     "@tailwindcss/vite": "^4.2.2",
-    "@verevoir/admin": "^0.1.0",
-    "@verevoir/editor": "^1.5.0",
-    "@verevoir/schema": "^1.4.0",
+    "@verevoir/admin": "file:../admin",
+    "@verevoir/editor": "file:../editor",
+    "@verevoir/schema": "file:../schema-engine",
     "@verevoir/storage": "^1.1.0",
     "astro": "^6.1.5",
     "astro-icon": "^1.1.5",
@@ -29,5 +29,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "daisyui": "^5.5.19"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }

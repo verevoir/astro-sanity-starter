@@ -1,10 +1,12 @@
 ---
-import { AdminShell, DocumentEditor } from '@verevoir/admin';
-import type { LinkablePage } from '@verevoir/admin';
-import '@verevoir/admin/styles/admin.css';
-import { storage } from '@/storage';
-import { ensureSeeded } from '@data/init';
-import { blocks, sections } from '@schema/registry';
+import { loadAdminGroups } from "@verevoir/admin/server";
+import type { LinkablePage } from "@verevoir/admin";
+import "@verevoir/admin/styles/admin.css";
+import "@/styles/admin-theme.css";
+import { storage } from "@/storage";
+import { ensureSeeded } from "@data/init";
+import { blocks, sections } from "@schema/registry";
+import { AdminEditorIsland } from "@/admin/AdminEditorIsland";
 
 export const prerender = false;
 
@@ -13,7 +15,7 @@ await ensureSeeded();
 const { blockType, id } = Astro.params;
 
 if (!blockType || !id) {
-    return Astro.redirect('/admin');
+    return Astro.redirect("/admin");
 }
 
 const entry = blocks[blockType];
@@ -23,7 +25,7 @@ if (!entry) {
 
 const doc = await storage.get(id);
 if (!doc || doc.blockType !== blockType) {
-    return new Response('Document not found', { status: 404 });
+    return new Response("Document not found", { status: 404 });
 }
 
 const data = doc.data as Record<string, unknown>;
@@ -37,20 +39,21 @@ const editorData = Object.fromEntries(
     schemaFields.map((key) => [key, data[key]]),
 );
 
-const hasSections = blockType === 'page';
+const hasSections = blockType === "page";
 const initialSections = hasSections
-    ? ((data.sections as Array<{ _type: string; [key: string]: unknown }>) ?? [])
+    ? ((data.sections as Array<{ _type: string; [key: string]: unknown }>) ??
+      [])
     : [];
 
 // Build the list of pages the LinkField picker can target.
-const allPages = await storage.list('page');
+const allPages = await storage.list("page");
 const linkablePages: LinkablePage[] = allPages.map((p) => {
     const pd = p.data as { title?: string; slug?: string };
     return {
         id: p.id,
-        title: pd.title ?? '(untitled)',
-        url: pd.slug ?? '/',
-        blockType: 'page',
+        title: pd.title ?? "(untitled)",
+        url: pd.slug ?? "/",
+        blockType: "page",
     };
 });
 
@@ -61,7 +64,10 @@ const hasPreview = previewUrl !== undefined;
 const displayName =
     (data.title as string | undefined) ??
     (data.headerTitle as string | undefined) ??
-    '(untitled)';
+    "(untitled)";
+
+// Sidebar context — same view model the home page uses.
+const groups = await loadAdminGroups({ storage, blocks });
 ---
 
 <!doctype html>
@@ -76,25 +82,26 @@ const displayName =
         />
     </head>
     <body>
-        <AdminShell
-            title="Verevoir Admin"
-            wide={hasPreview}
+        <AdminEditorIsland
+            client:only="react"
+            groups={groups}
+            basePath="/admin"
+            currentPath={Astro.url.pathname}
             breadcrumbs={[
-                { label: entry.label ?? blockType, href: '/admin' },
+                { label: entry.label ?? blockType, href: "/admin" },
                 { label: displayName },
             ]}
-        >
-            <DocumentEditor
-                client:only="react"
-                id={id}
-                blockType={blockType}
-                initialData={editorData}
-                block={entry.block}
-                previewUrl={previewUrl}
-                sectionTypes={hasSections ? sections : undefined}
-                initialSections={initialSections}
-                linkablePages={linkablePages}
-            />
-        </AdminShell>
+            hasPreview={hasPreview}
+            editor={{
+                id,
+                blockType,
+                initialData: editorData,
+                block: entry.block,
+                previewUrl,
+                sectionTypes: hasSections ? sections : undefined,
+                initialSections,
+                linkablePages,
+            }}
+        />
     </body>
 </html>

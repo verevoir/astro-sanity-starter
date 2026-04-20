@@ -1,25 +1,20 @@
 ---
-import { AdminShell, DocumentList } from '@verevoir/admin';
-import type { DocumentListGroup } from '@verevoir/admin';
-import '@verevoir/admin/styles/admin.css';
-import { storage } from '@/storage';
-import { ensureSeeded } from '@data/init';
-import { blocks } from '@schema/registry';
+import { loadAdminGroups } from "@verevoir/admin/server";
+import "@verevoir/admin/styles/admin.css";
+import "@/styles/admin-theme.css";
+import { storage } from "@/storage";
+import { ensureSeeded } from "@data/init";
+import { blocks } from "@schema/registry";
+import { AdminHomeIsland } from "@/admin/AdminHomeIsland";
 
 export const prerender = false;
 
 await ensureSeeded();
 
-// Build one DocumentList group per registered block type. The
-// admin's DocumentList is purely presentational — the data
-// fetching lives in the route, in whatever shape the host wants.
-const groups: DocumentListGroup[] = await Promise.all(
-    Object.entries(blocks).map(async ([blockType, entry]) => ({
-        blockType,
-        entry,
-        documents: await storage.list(blockType),
-    })),
-);
+// Server-side load: returns a serialisable view model that the
+// AdminProvider feeds into the sidebar / document list. The full
+// registry (with class instances) stays on the server.
+const groups = await loadAdminGroups({ storage, blocks });
 ---
 
 <!doctype html>
@@ -34,12 +29,11 @@ const groups: DocumentListGroup[] = await Promise.all(
         />
     </head>
     <body>
-        <AdminShell
-            title="Verevoir Admin"
-            headerActions={undefined}
-            navLinks={[{ label: 'View site →', href: '/' }]}
-        >
-            <DocumentList groups={groups} />
-        </AdminShell>
+        <AdminHomeIsland
+            client:only="react"
+            groups={groups}
+            basePath="/admin"
+            currentPath={Astro.url.pathname}
+        />
     </body>
 </html>

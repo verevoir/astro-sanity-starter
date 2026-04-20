@@ -1,0 +1,248 @@
+/*
+ * Starter admin theme overrides.
+ *
+ * Loaded after `@verevoir/admin/styles/admin.css` to layer a
+ * gradient background + glassmorphism on top of the default theme.
+ * Every selector here exists in the admin's published markup —
+ * see the `data-*` attribute reference in @verevoir/admin/dist/styles.
+ *
+ * Tune the colours and stops below to taste; the structural rules
+ * (which surfaces are glass, where the gradients live) should stay
+ * roughly as-is or the layering will fall apart.
+ */
+
+/* ----- 1. Palette overrides ----------------------------------------
+ *
+ * Light text on a dark gradient. Override the admin's CSS custom
+ * properties so existing components inherit the new colours without
+ * needing per-element rules.
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin {
+    --admin-bg: transparent; /* let the body gradient show through */
+    --admin-surface: rgba(255, 255, 255, 0.06);
+    --admin-surface-raised: rgba(255, 255, 255, 0.1);
+    --admin-border: rgba(255, 255, 255, 0.14);
+    --admin-border-strong: rgba(255, 255, 255, 0.24);
+
+    --admin-text: #f5f0ff;
+    --admin-text-muted: rgba(245, 240, 255, 0.65);
+    --admin-text-strong: #ffffff;
+
+    --admin-accent-text: #1a1226;
+
+    /* Modal dialogs need an opaque, darker surface so they read
+       clearly against the page gradient. The glass surface here is
+       too transparent for a focused edit panel. */
+    --admin-dialog-bg: #1a1a3d;
+}
+
+/* ----- 2. Background gradients --------------------------------------
+ *
+ * Two layers stacked on the admin shell:
+ *
+ *   • A radial spotlight (drawn on top) — moves the eye to the
+ *     centre-top of the page where the doc title and tabs live.
+ *
+ *   • A linear wall+floor gradient (drawn underneath) — soft seam
+ *     around the 60% mark gives a corner-of-room feel without a
+ *     hard horizon line.
+ *
+ * Tune the spotlight position with `at X% Y%`, intensity with the
+ * alpha values in the inner stop, and softness with the position
+ * of the outer transparent stop. Tune the wall/floor break point
+ * by moving the two middle stops (currently 58%/62%).
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin {
+    background:
+        radial-gradient(ellipse 60% 70% at 50% 22%, #26267b 0%, #20207499 68%, #06063d00 100%),
+        radial-gradient(ellipse 60% 15% at 50% 95%, #26267b 0%, #06063d 100%);
+    background-attachment: fixed;
+}
+
+/* ----- 3. Glass surfaces -------------------------------------------
+ *
+ * The recipe (in order of importance):
+ *
+ *   1. Semi-transparent gradient background — gives the panel a
+ *      slight light-from-top sheen.
+ *   2. backdrop-filter blur + saturation — frosts whatever is
+ *      behind the panel.
+ *   3. 1px white-ish border for the highlight edge.
+ *   4. A soft drop shadow that lifts the panel off the gradient.
+ *
+ * The `-webkit-` prefix on backdrop-filter is still worth keeping —
+ * older Safari needed it and the cost of including it is zero.
+ *
+ * Tune the blur radius (16–28px is the sweet spot), the saturation
+ * (1.2–1.6), and the alpha values in the gradient stops.
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin [data-admin-header],
+.verevoir-admin [data-admin-sidebar-slot],
+.verevoir-admin [data-document-editor-tabs],
+.verevoir-admin [data-document-editor-col][data-col='left'],
+.verevoir-admin [data-document-list-items],
+.verevoir-admin [data-document-editor][data-document-editor-mode='contentless'] {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ----- 4. Header + logo --------------------------------------------
+ *
+ * Full-bleed header (no max-width, no auto-margin) so the logo can
+ * sit hard against the left edge. Logo is an external SVG, so colour
+ * it via filter — flatten to white then fade to muted text alpha.
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin [data-admin-header-inner] {
+    max-width: none;
+    margin: 0;
+    padding: 0.75rem 1.5rem 0.75rem 0.75rem;
+    align-items: baseline;
+}
+
+.verevoir-admin [data-admin-title] img {
+    /* Flatten the SVG to white then fade to muted text colour. */
+    filter: brightness(0) invert(1);
+    opacity: 0.65;
+    vertical-align: baseline;
+}
+
+/* ----- 5. Glass edge highlights + seam clipping --------------------
+ *
+ * A ::after pseudo paints a white-fading-to-transparent gradient
+ * around each glass surface — gives the panels a refraction feel.
+ * Where surfaces meet (header→sidebar), the highlights would stack
+ * into a visible seam, so clip the abutting edges away. The base
+ * structural borders and the header drop-shadow get nuked too so
+ * the join reads as one continuous glass pane.
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin [data-admin-header],
+.verevoir-admin [data-admin-sidebar-slot],
+.verevoir-admin [data-document-editor-col][data-col='left'] {
+    position: relative;
+    /* Layer specular highlight pseudos behind content but over the blur. */
+    isolation: isolate;
+}
+
+.verevoir-admin [data-admin-header]::after,
+.verevoir-admin [data-admin-sidebar-slot]::after,
+.verevoir-admin [data-document-editor-col][data-col='left']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    /* Light hits top-left, fades to nothing bottom-right. */
+    border-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.05) 40%, transparent 60%) 1;
+    pointer-events: none;
+}
+
+.verevoir-admin [data-admin-header] {
+    border-bottom: none;
+    /* Stop the header shadow bleeding into the sidebar. */
+    box-shadow: none;
+}
+
+.verevoir-admin [data-admin-header]::after {
+    /* Hide the bottom edge of the highlight — meets the sidebar. */
+    clip-path: inset(0 0 1px 0);
+}
+
+.verevoir-admin [data-admin-sidebar-slot] {
+    border-right-color: rgba(255, 255, 255, 0.06);
+    border-top: none;
+}
+
+.verevoir-admin [data-admin-sidebar-slot]::after {
+    /* Hide the top edge of the highlight — meets the header. */
+    clip-path: inset(1px 0 0 0);
+}
+
+.verevoir-admin [data-document-editor-col][data-col='left'] {
+    border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+.verevoir-admin [data-document-editor-tabs] {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* The right column of the editor body (which hosts the iframe in
+   Versions/Content tabs) stays transparent so the wall/floor shows
+   through behind the preview frame. */
+.verevoir-admin [data-document-editor-col][data-col='right'] {
+    background: transparent;
+}
+
+/* ----- 6. Frosted noise texture ------------------------------------
+ *
+ * SVG turbulence painted over the entire admin viewport — breaks up
+ * the digital smoothness of the gradients and glass. Uses a fixed
+ * pseudo-element so the grain stays put as you scroll, like a film
+ * layer on the screen itself.
+ *
+ * The opacity lives on the rect inside the SVG so the pseudo can
+ * remain at full alpha; tune `opacity` in the SVG to change how
+ * pronounced the grain reads (0.0075 ≈ a quarter of the original
+ * strength — barely perceptible).
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.0075'/%3E%3C/svg%3E");
+}
+
+/* ----- 7. Field shells over glass ----------------------------------
+ *
+ * Field inputs need contrast for readability, so they get a slightly
+ * more opaque surface than the chrome. Keeps text crisp without
+ * losing the glass aesthetic.
+ * ---------------------------------------------------------------- */
+
+.verevoir-admin [data-field] {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.verevoir-admin [data-field]:focus-within {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 1px var(--admin-accent);
+}
+
+.verevoir-admin [data-field-help-popover] {
+    /* Popover already has good contrast against any background, but
+     give it a subtle glow so it reads as floating. */
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+}
+
+/* ----- 8. Sections editor + section cards --------------------------
+ *
+ * The polymorphic section list lives in the Content tab and gets
+ * its own glass treatment so individual sections still feel
+ * tactile against the larger column. */
+
+.verevoir-admin [data-sections-editor] {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.verevoir-admin [data-sections-item] {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.verevoir-admin [data-sections-item][data-sections-item-open='true'] {
+    background: rgba(255, 174, 156, 0.12);
+    border-color: var(--admin-accent);
+}

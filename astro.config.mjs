@@ -13,6 +13,16 @@ export default defineConfig({
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        // The BlobAdapter persists every save to `./data/*.json`.
+        // Without this ignore, Vite picks up its own writes and
+        // fires HMR, which reloads the admin every time the user
+        // moves a section. Content edits should refresh the preview
+        // iframe only, not the editor itself.
+        ignored: ['**/data/**'],
+      },
+    },
   },
   server: {
     port: 4321,
