@@ -22,7 +22,7 @@ const { heading, body, cta, ...rest } = Astro.props;
         cta && cta.length > 0 && (
             <div class:list={[(heading || body) && 'mt-8', 'flex flex-wrap items-center justify-center gap-4']}>
                 {cta.map((item) => (
-                    <Action action={item} class:list={[item._type === 'text' && 'font-bold underline hover:no-underline']} />
+                    <Action action={item} />
                 ))}
             </div>
         )

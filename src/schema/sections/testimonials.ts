@@ -3,14 +3,14 @@ import {
   text,
   richText,
   select,
-  boolean,
   array,
   object,
 } from "@verevoir/schema";
 
 /**
  * Testimonials section — quote cards from customers/partners.
- * Items render as CardGridArrayField (the author object is nested).
+ * Items render as a list + modal in the admin (drag handle, stacked
+ * up/down, click to edit).
  */
 export const testimonialsSection = defineBlock({
   name: "testimonialsSection",
@@ -19,14 +19,8 @@ export const testimonialsSection = defineBlock({
       .max(120)
       .hint("Section title. e.g. 'What our customers say'."),
     body: richText("Body").optional(),
-    columns: select("Columns", ["one", "two"]).hint(
+    columns: select("Columns", ["one", "two", "three", "four"]).hint(
       "How many testimonials per row on desktop.",
-    ),
-    theme: select("Theme", ["light", "dark"]).hint(
-      "Switches the section background and text colour.",
-    ),
-    width: select("Width", ["full", "inset"]).hint(
-      "`full` runs to the page edges. `inset` adds rounded corners and a max-width container.",
     ),
     items: array(
       "Testimonials",
@@ -34,18 +28,20 @@ export const testimonialsSection = defineBlock({
         quote: richText("Quote").hint(
           "The testimonial text. Markdown supported.",
         ),
-        author: object("Author", {
-          name: text("Name"),
-          title: text("Title").optional(),
-          company: object("Company", {
-            name: text("Company name"),
-          }),
-        }),
-        theme: select("Theme", ["light", "dark", "transparent"]),
-        hasBorder: boolean("Show border"),
+        authorName: text("Author").hint(
+          "Person being quoted (e.g. 'Jane Doe').",
+        ),
+        authorTitle: text("Title")
+          .optional()
+          .hint("Their role (e.g. 'Head of Marketing')."),
+        company: text("Company")
+          .optional()
+          .hint("Where they work."),
       }),
-    ).hint(
-      "Testimonial quotes. Each item has the quote, author, and an optional company.",
-    ),
+    )
+      .display("table")
+      .hint(
+        "Testimonial quotes. Each item has the quote, author, optional title, and company.",
+      ),
   },
 });

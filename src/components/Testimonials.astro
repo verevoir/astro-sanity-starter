@@ -7,6 +7,15 @@ import Section from '@components/Section.astro';
 interface Props extends TestimonialsSection {}
 
 const { heading, body, items, columns, ...rest } = Astro.props;
+
+// Map the column count to a Tailwind grid class. `one` is the
+// default (no md: override needed). Extra entries are easy to add
+// here if the schema gains five+ columns.
+const columnsClass = {
+    two: 'md:grid-cols-2',
+    three: 'md:grid-cols-3',
+    four: 'md:grid-cols-4',
+}[columns as 'two' | 'three' | 'four'] ?? '';
 ---
 
 <Section {...rest} class="text-center">
@@ -20,9 +29,7 @@ const { heading, body, items, columns, ...rest } = Astro.props;
     {body && <div class:list={['mx-auto', heading && 'mt-4', 'max-w-prose markdown']} set:html={marked.parse(body)} />}
     {
         items && items?.length > 0 && (
-            <div
-                class:list={[(heading || body) && 'mt-8', 'grid gap-8 justify-items-center', columns !== 'one' && 'md:grid-cols-2']}
-            >
+            <div class:list={[(heading || body) && 'mt-8', 'grid gap-8 justify-items-center', columnsClass]}>
                 {items?.map((testimonial) => (
                     <Testimonial {...testimonial} />
                 ))}

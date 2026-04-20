@@ -1,12 +1,4 @@
-import {
-  defineBlock,
-  text,
-  richText,
-  select,
-  array,
-  object,
-  link,
-} from "@verevoir/schema";
+import { defineBlock, text, richText, array, object, link } from '@verevoir/schema';
 
 /**
  * Call-to-action section — heading + body + buttons. Smaller than
@@ -14,36 +6,16 @@ import {
  * admin.
  */
 export const ctaSection = defineBlock({
-  name: "ctaSection",
-  fields: {
-    heading: text("Heading")
-      .max(120)
-      .hint("The action you want the visitor to take."),
-    body: richText("Body")
-      .optional()
-      .hint("One line of supporting copy."),
-    theme: select("Theme", ["light", "dark"]).hint(
-      "Switches the section background and text colour.",
-    ),
-    width: select("Width", ["full", "inset"]).hint(
-      "`full` runs to the page edges. `inset` adds rounded corners and a max-width container.",
-    ),
-    cta: array(
-      "Calls to action",
-      object("Action", {
-        _type: select("Style", ["actionButton", "actionLink"]).hint(
-          "`actionButton` renders as a filled button. `actionLink` renders as inline text.",
-        ),
-        label: text("Label").hint("The visible text on the button or link."),
-        url: link("URL").hint(
-          "Full URL (https://…) for external destinations, or a slug (`/about`) for internal pages.",
-        ),
-        theme: select("Theme", ["primary", "secondary", "accent", "neutral"])
-          .optional()
-          .hint("Button colour. Only applies when style is actionButton."),
-      }),
-    ).hint(
-      "Buttons and links shown beneath the body. Add as many as you need; reorder with the arrow buttons.",
-    ),
-  },
+    name: 'ctaSection',
+    fields: {
+        heading: text('Heading').max(120).hint('The action you want the visitor to take.'),
+        body: richText('Body').optional().hint('One line of supporting copy.'),
+        cta: array(
+            'Calls to action',
+            object('Action', {
+                label: text('Label').hint('The visible text on the button.'),
+                url: link('URL').hint('Full URL (https://…) for external destinations, or a slug (`/about`) for internal pages.')
+            })
+        ).hint('Buttons shown beneath the body. Add as many as you need; reorder with the arrow buttons or drag handle.')
+    }
 });

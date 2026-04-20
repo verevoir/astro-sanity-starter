@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120.03 60.53">
+  <defs>
+    <style>
+      .cls-2 {
+        stroke: #fff;
+        fill: #fff8;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-2" x="29.21" y="25.92" width="61.61" height="3.96"/>
+    <rect class="cls-2" x="36.08" y="13.92" width="47.87" height="7.75"/>
+    <rect class="cls-2" x="47.56" y="35.52" width="24.92" height="9.12" rx="4.56" ry="4.56"/>
+  </g>
+</svg>

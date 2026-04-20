@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120.03 60.53">
+  <defs>
+    <style>
+      .foreground {
+        stroke: #fff;
+      }
+
+      .foreground, .background {
+        fill: #fff4;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="background" x=".5" y="9.39" width="119.03" height="41.75"/>
+    <rect class="foreground" x="4.44" y="11.73" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+    <rect class="foreground" x="43.18" y="11.73" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+    <rect class="foreground" x="4.44" y="31.4" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+    <rect class="foreground" x="43.18" y="31.4" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+    <rect class="foreground" x="81.34" y="11.94" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+    <rect class="foreground" x="81.34" y="31.61" width="33.98" height="16.8" rx="6.13" ry="6.13"/>
+  </g>
+</svg>

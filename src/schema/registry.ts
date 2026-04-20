@@ -12,6 +12,7 @@ export const blocks: BlockRegistry = {
   page: {
     block: page,
     label: "Pages",
+    category: "Content",
     preview: (data) => {
       const slug = data.slug as string | undefined;
       return slug ?? "/";
@@ -20,6 +21,7 @@ export const blocks: BlockRegistry = {
   siteConfig: {
     block: siteConfig,
     label: "Site configuration",
+    category: "Configuration",
     singleton: true,
   },
 };

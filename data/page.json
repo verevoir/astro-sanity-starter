@@ -10,6 +10,63 @@
       "metaDescription": "A lightweight alternative to monolithic CMS platforms. You own the database, the deployment, and the data.",
       "sections": [
         {
+          "_type": "testimonialsSection",
+          "heading": "What developers are saying",
+          "columns": "two",
+          "items": [
+            {
+              "quote": "\"Switched from Sanity to Verevoir in a weekend. Same content models, but now I own the database and the deploy. No more usage-based pricing surprises.\"",
+              "author": {
+                "name": "Alex Chen",
+                "title": "Full-Stack Developer",
+                "company": {
+                  "name": "Indie Studio"
+                }
+              },
+              "theme": "light",
+              "hasBorder": true
+            },
+            {
+              "quote": "\"The schema engine is brilliant — define once, get TypeScript types, validation, and editor UI for free. It's what I always wanted from a headless CMS.\"",
+              "author": {
+                "name": "Sarah Mitchell",
+                "title": "Frontend Architect",
+                "company": {
+                  "name": "Scale Labs"
+                }
+              },
+              "theme": "light",
+              "hasBorder": true
+            },
+            {
+              "quote": "\"Commerce, bookings, content — all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple.\"",
+              "author": {
+                "name": "James Park",
+                "title": "CTO",
+                "company": {
+                  "name": "EventFlow"
+                }
+              },
+              "theme": "light",
+              "hasBorder": true
+            },
+            {
+              "quote": "\"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box — accounts, commerce, stripe adapter. Shipped in days, not weeks.\"",
+              "author": {
+                "name": "Maria Santos",
+                "title": "Lead Engineer",
+                "company": {
+                  "name": "Launchpad"
+                }
+              },
+              "theme": "light",
+              "hasBorder": true
+            }
+          ],
+          "theme": "dark",
+          "width": "full"
+        },
+        {
           "_type": "heroSection",
           "heading": "Your content, your database, your rules",
           "body": "Verevoir is a set of composable TypeScript libraries for structured content, commerce, and editing. No hosted backend, no vendor lock-in — just **npm packages** in your app.",
@@ -163,63 +220,6 @@
           "width": "full"
         },
         {
-          "_type": "testimonialsSection",
-          "heading": "What developers are saying",
-          "columns": "two",
-          "items": [
-            {
-              "quote": "\"Switched from Sanity to Verevoir in a weekend. Same content models, but now I own the database and the deploy. No more usage-based pricing surprises.\"",
-              "author": {
-                "name": "Alex Chen",
-                "title": "Full-Stack Developer",
-                "company": {
-                  "name": "Indie Studio"
-                }
-              },
-              "theme": "light",
-              "hasBorder": true
-            },
-            {
-              "quote": "\"The schema engine is brilliant — define once, get TypeScript types, validation, and editor UI for free. It's what I always wanted from a headless CMS.\"",
-              "author": {
-                "name": "Sarah Mitchell",
-                "title": "Frontend Architect",
-                "company": {
-                  "name": "Scale Labs"
-                }
-              },
-              "theme": "light",
-              "hasBorder": true
-            },
-            {
-              "quote": "\"Commerce, bookings, content — all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple.\"",
-              "author": {
-                "name": "James Park",
-                "title": "CTO",
-                "company": {
-                  "name": "EventFlow"
-                }
-              },
-              "theme": "light",
-              "hasBorder": true
-            },
-            {
-              "quote": "\"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box — accounts, commerce, stripe adapter. Shipped in days, not weeks.\"",
-              "author": {
-                "name": "Maria Santos",
-                "title": "Lead Engineer",
-                "company": {
-                  "name": "Launchpad"
-                }
-              },
-              "theme": "light",
-              "hasBorder": true
-            }
-          ],
-          "theme": "dark",
-          "width": "full"
-        },
-        {
           "_type": "ctaSection",
           "heading": "Ready to own your stack?",
           "body": "Verevoir is open source and free to use. Start with one package, adopt more as you need them.",
@@ -242,6 +242,6 @@
       ]
     },
     "createdAt": "2026-04-10T04:50:45.359Z",
-    "updatedAt": "2026-04-10T09:30:11.515Z"
+    "updatedAt": "2026-04-19T19:48:17.739Z"
   }
 ]
