@@ -15,6 +15,7 @@
     "@astrojs/netlify": "^7.0.6",
     "@astrojs/react": "^5.0.3",
     "@tailwindcss/vite": "^4.2.2",
+    "@verevoir/access": "file:../access",
     "@verevoir/admin": "file:../admin",
     "@verevoir/editor": "file:../editor",
     "@verevoir/schema": "file:../schema-engine",

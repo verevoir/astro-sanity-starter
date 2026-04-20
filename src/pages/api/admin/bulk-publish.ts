@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { storage } from "@/storage";
 import { ensureSeeded } from "@data/init";
+import { policy } from "@/access";
 
 export const prerender = false;
 
@@ -16,13 +17,21 @@ interface BulkPublishBody {
  * happened server-side when the page loaded; this route just takes
  * the ids and the new window.
  *
- * Currently deny-none: any admin user can hit this endpoint. Wire
- * an access check around the body below when authentication lands
- * on the starter — the shape maps one-to-one onto
- * `access.can(identity, 'update', doc)` per id.
+ * The middleware guarantees an authenticated identity on locals
+ * (unauth'd requests are redirected to /admin/login before this
+ * route runs). We additionally check `policy.can(identity, 'update')`
+ * here: viewers authenticate but can't mutate.
  */
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   await ensureSeeded();
+
+  const identity = locals.identity;
+  if (!identity) {
+    return new Response("Unauthenticated", { status: 401 });
+  }
+  if (!policy.can(identity, "update")) {
+    return new Response("Forbidden", { status: 403 });
+  }
 
   let body: BulkPublishBody;
   try {

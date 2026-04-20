@@ -1,6 +1,7 @@
 import type { BlockRegistry, SectionEntry } from "@verevoir/admin";
 import { page } from "./page";
 import { siteConfig } from "./site-config";
+import { roleAssignment } from "./role-assignment";
 import { sectionDefinitions } from "./sections";
 
 /**
@@ -23,6 +24,11 @@ export const blocks: BlockRegistry = {
     label: "Site configuration",
     category: "Configuration",
     singleton: true,
+  },
+  "role-assignment": {
+    block: roleAssignment,
+    label: "Role assignments",
+    category: "Configuration",
   },
 };
 

@@ -1,0 +1,56 @@
+---
+import "@verevoir/admin/styles/admin.css";
+import "@/styles/admin-theme.css";
+
+export const prerender = false;
+
+const returnTo = Astro.url.searchParams.get("returnTo") ?? "/admin";
+
+// If the user is already authenticated, don't make them re-pick.
+// Middleware attaches the identity before this page renders.
+if (Astro.locals.identity) {
+    return Astro.redirect(returnTo);
+}
+---
+
+<!doctype html>
+<html lang="en" class="verevoir-admin">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Sign in · Verevoir Admin</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400..900;1,400..900&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body data-admin-login>
+        <main>
+            <h1>Sign in</h1>
+            <p>
+                Dev-only login — pick an identity. Swap for Google or
+                OIDC in <code>src/access/index.ts</code> before
+                deploying to production. See <code
+                    >docs/add-google-auth.md</code
+                >.
+            </p>
+            <form method="POST" action="/api/admin/login">
+                <label for="token">Identity</label>
+                <select name="token" id="token">
+                    <option value="admin-token"
+                        >admin@local (seed admin)</option
+                    >
+                    <option value="viewer-token"
+                        >viewer@local (read-only viewer)</option
+                    >
+                </select>
+                <input
+                    type="hidden"
+                    name="returnTo"
+                    value={returnTo}
+                />
+                <button type="submit">Sign in</button>
+            </form>
+        </main>
+    </body>
+</html>

@@ -8,6 +8,12 @@ export interface AdminTagSchedulerIslandProps {
     currentPath?: string;
     tag: string;
     documents: TagDocument[];
+    /**
+     * Whether the current identity can update any document in this
+     * tag. v1 has no per-document ownership so this is a single
+     * boolean rather than a predicate.
+     */
+    canEditAll: boolean;
     bulkPublishUrl: string;
 }
 
@@ -17,6 +23,7 @@ export function AdminTagSchedulerIsland({
     currentPath,
     tag,
     documents,
+    canEditAll,
     bulkPublishUrl,
 }: AdminTagSchedulerIslandProps) {
     const handleSave = async ({
@@ -51,7 +58,12 @@ export function AdminTagSchedulerIsland({
                 breadcrumbs: [{ label: 'Tags', href: `${basePath}/tags` }, { label: tag }],
             }}
         >
-            <TagScheduler tag={tag} documents={documents} onSave={handleSave} />
+            <TagScheduler
+                tag={tag}
+                documents={documents}
+                canEdit={() => canEditAll}
+                onSave={handleSave}
+            />
         </AdminLayout>
     );
 }

@@ -5,6 +5,7 @@ import "@/styles/admin-theme.css";
 import { storage } from "@/storage";
 import { ensureSeeded } from "@data/init";
 import { blocks } from "@schema/registry";
+import { policy } from "@/access";
 import { AdminTagSchedulerIsland } from "@/admin/AdminTagSchedulerIsland";
 
 export const prerender = false;
@@ -20,6 +21,13 @@ const [groups, documents] = await Promise.all([
     loadAdminGroups({ storage, blocks }),
     loadTagDetail({ storage, blocks, tag }),
 ]);
+
+// v1 doesn't model per-document ownership, so canEdit is a single
+// boolean across the whole tag. When we add ownership, this becomes
+// a per-doc check that goes into the island and runs against each
+// TagDocument.
+const identity = Astro.locals.identity;
+const canEditAll = identity ? policy.can(identity, "update") : false;
 ---
 
 <!doctype html>
@@ -41,6 +49,7 @@ const [groups, documents] = await Promise.all([
             currentPath={Astro.url.pathname}
             tag={tag}
             documents={documents}
+            canEditAll={canEditAll}
             bulkPublishUrl="/api/admin/bulk-publish"
         />
     </body>
