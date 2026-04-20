@@ -53,17 +53,7 @@ test.describe('Page editor', () => {
     await expect(page).toHaveURL(/\/admin\/page\//);
   });
 
-  // eslint-disable-next-line playwright/no-skipped-test
-  test.skip('testimonials columns dropdown lists 1-4', async ({ page }) => {
-    // Parked 2026-04-20: passes in isolation but regressed after
-    // adding the access file-link to the starter. The serialised
-    // schema arriving at the React island has a zod 3 shape (_def
-    // present, def absent) instead of the zod 4 shape, causing
-    // SelectField to render zero options. Suspect a module
-    // resolution path pulling zod 3 from a transitively linked
-    // package. Rebuilding schema-engine in isolation gives the
-    // expected zod 4 shape; the starter's build path differs.
-    // TODO: track down the bad zod 3 import, then re-enable.
+  test('testimonials columns dropdown lists 1-4', async ({ page }) => {
     await page
       .locator('[data-sections-item-toggle]')
       .filter({ hasText: 'Testimonials' })
