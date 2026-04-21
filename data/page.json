@@ -6,7 +6,7 @@
       "title": "Home",
       "slug": "/",
       "addTitleSuffix": true,
-      "metaTitle": "Verevoir — Content, Commerce & Editing as Composable Libraries",
+      "metaTitle": "Verevoir \u2014 Content, Commerce & Editing as Composable Libraries",
       "metaDescription": "A lightweight alternative to monolithic CMS platforms. You own the database, the deployment, and the data.",
       "sections": [
         {
@@ -27,7 +27,7 @@
               "hasBorder": true
             },
             {
-              "quote": "\"The schema engine is brilliant — define once, get TypeScript types, validation, and editor UI for free. It's what I always wanted from a headless CMS.\"",
+              "quote": "\"The schema engine is brilliant \u2014 define once, get TypeScript types, validation, and editor UI for free. It's what I always wanted from a headless CMS.\"",
               "author": {
                 "name": "Sarah Mitchell",
                 "title": "Frontend Architect",
@@ -39,7 +39,7 @@
               "hasBorder": true
             },
             {
-              "quote": "\"Commerce, bookings, content — all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple.\"",
+              "quote": "\"Commerce, bookings, content \u2014 all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple.\"",
               "author": {
                 "name": "James Park",
                 "title": "CTO",
@@ -51,7 +51,7 @@
               "hasBorder": true
             },
             {
-              "quote": "\"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box — accounts, commerce, stripe adapter. Shipped in days, not weeks.\"",
+              "quote": "\"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box \u2014 accounts, commerce, stripe adapter. Shipped in days, not weeks.\"",
               "author": {
                 "name": "Maria Santos",
                 "title": "Lead Engineer",
@@ -69,7 +69,7 @@
         {
           "_type": "heroSection",
           "heading": "Your content, your database, your rules",
-          "body": "Verevoir is a set of composable TypeScript libraries for structured content, commerce, and editing. No hosted backend, no vendor lock-in — just **npm packages** in your app.",
+          "body": "Verevoir is a set of composable TypeScript libraries for structured content, commerce, and editing. No hosted backend, no vendor lock-in \u2014 just **npm packages** in your app.",
           "cta": [
             {
               "_type": "actionButton",
@@ -94,7 +94,7 @@
           "items": [
             {
               "heading": "TypeScript-First Schemas",
-              "body": "Define content shapes with `defineBlock()`. Get validators, types, and editor hints — all from one definition.",
+              "body": "Define content shapes with `defineBlock()`. Get validators, types, and editor hints \u2014 all from one definition.",
               "badge": {
                 "label": "Schema Engine",
                 "theme": "primary"
@@ -105,7 +105,7 @@
             },
             {
               "heading": "Any Database",
-              "body": "PostgreSQL today, SQLite tomorrow. The `StorageAdapter` interface means you pick the database — and you can switch.",
+              "body": "PostgreSQL today, SQLite tomorrow. The `StorageAdapter` interface means you pick the database \u2014 and you can switch.",
               "badge": {
                 "label": "Storage",
                 "theme": "secondary"
@@ -116,7 +116,7 @@
             },
             {
               "heading": "Drop-In Editor",
-              "body": "Lightweight React components for content editing. Rich text, field validation, block forms — ready to embed in your admin UI.",
+              "body": "Lightweight React components for content editing. Rich text, field validation, block forms \u2014 ready to embed in your admin UI.",
               "badge": {
                 "label": "Editor",
                 "theme": "accent"
@@ -127,7 +127,7 @@
             },
             {
               "heading": "Auth & Access Control",
-              "body": "Google OAuth, Apple Sign-In, OIDC, API keys. Role-based policies and workflow state machines — all standalone.",
+              "body": "Google OAuth, Apple Sign-In, OIDC, API keys. Role-based policies and workflow state machines \u2014 all standalone.",
               "badge": {
                 "label": "Access",
                 "theme": "primary"
@@ -149,7 +149,7 @@
             },
             {
               "heading": "Zero Lock-In",
-              "body": "Every package works standalone. Adopt one, adopt all — your call. No all-or-nothing, no migration cliff.",
+              "body": "Every package works standalone. Adopt one, adopt all \u2014 your call. No all-or-nothing, no migration cliff.",
               "badge": {
                 "label": "Philosophy",
                 "theme": "accent"
@@ -239,7 +239,9 @@
           "theme": "light",
           "width": "inset"
         }
-      ]
+      ],
+      "status": "published",
+      "tags": []
     },
     "createdAt": "2026-04-10T04:50:45.359Z",
     "updatedAt": "2026-04-19T19:48:17.739Z"

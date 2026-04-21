@@ -1,0 +1,61 @@
+# astro-sanity-starter — llms.txt
+
+An Astro marketing site with a content admin, composed from the `@verevoir/*` packages. The starter on-ramp for evaluating the Verevoir stack.
+
+## Read these first
+
+- [CLAUDE.md](CLAUDE.md) — starter-wide layering, conventions, where things live. Read before making any change.
+- [docs/README.md](docs/README.md) — index of hand-written recipe docs.
+- [docs/authentication.md](docs/authentication.md) — dev auth flow, roles, cookie handling.
+- [docs/roadmap.md](docs/roadmap.md) — what v1 deliberately isn't, forward path.
+
+## Read when the task touches content modelling
+
+- [src/schema/page.ts](src/schema/page.ts) — page block definition; uses `defineContentBlock` + `publishFields()` + `tagsField()`.
+- [src/schema/registry.ts](src/schema/registry.ts) — block registry the admin sidebar reads from.
+- [src/schema/sections/](src/schema/sections/) — polymorphic page sections.
+- [docs/add-document-types.md](docs/add-document-types.md) — recipe for adding a new block type end-to-end.
+
+## Read when the task touches auth
+
+- [src/access/index.ts](src/access/index.ts) — auth adapter, role store, policy composition.
+- [src/middleware.ts](src/middleware.ts) — request-level identity resolve + `/admin/*` gate.
+- [docs/seeding-the-first-admin.md](docs/seeding-the-first-admin.md) — env-based bootstrap and close-the-backdoor behaviour.
+- [docs/upgrading-users.md](docs/upgrading-users.md) — role-assignment flow via the admin UI.
+- [docs/add-google-auth.md](docs/add-google-auth.md) — swap the dev test-accounts adapter for Google.
+
+## Read when the task touches storage
+
+- [src/storage.ts](src/storage.ts) — the single storage instance.
+- [src/blob-adapter.ts](src/blob-adapter.ts) + [src/blob-store.ts](src/blob-store.ts) — filesystem-backed adapter.
+- [docs/port-your-data.md](docs/port-your-data.md) — import from Sanity / Markdown; swap storage backends.
+
+## Read when the task touches styling
+
+- [src/styles/globals.css](src/styles/globals.css) — Tailwind + DaisyUI themes for the public site.
+- [src/styles/admin-theme.css](src/styles/admin-theme.css) — glass-theme overrides for `@verevoir/admin`.
+- [docs/theme-the-website.md](docs/theme-the-website.md) — recipe for porting the admin glass aesthetic to the public site.
+
+## Key conventions
+
+- **Layering**: `schema + storage` is the content lake. Adding `editor` makes it a CMS. Adding `admin` is a shell around the editor. The starter composes them. New features go in the lowest layer that can express them — usually the editor layer as an augmentation helper, rarely in storage.
+- **`isLive(data)`**: public renders MUST filter by this. Drafts, unpublished, and expired docs must not leak to the public site. See `src/data/page.ts` for the pattern.
+- **Auth**: dev uses `@verevoir/access/test-accounts`. Swap for real OAuth per `docs/add-google-auth.md`. Role assignments persist via `createRoleStore`; the first admin is seeded once via `SEED_ADMIN_ID` and the env is ignored thereafter.
+
+## Commands
+
+- `npm run dev` — dev server (port 4321)
+- `npm run build` — hybrid production build (public + admin)
+- `npm run build:static` — tarball of public HTML only (no admin)
+- `npm test` — Playwright smoke suite
+
+## What NOT to do
+
+- Don't add fields or feature logic to `@verevoir/storage` unless you've confirmed the feature can't be expressed as an editor-layer augmentation helper. Storage stays minimal by design.
+- Don't skip `isLive()` on public routes.
+- Don't hand-edit `data/*.json` while the admin is running — it'll be overwritten on the next save.
+- Don't commit `.env` (gitignored). Use `.env.example` as the shape reference.
+
+## Source of truth for platform-wide decisions
+
+The Verevoir control-plane repo (`/Users/adamsurgenor/Projects/Home/Verevoir`) holds architecture diagrams, ADRs, and cross-package conventions. Read its `CLAUDE.md` when a question spans multiple `@verevoir/*` packages or touches the broader platform strategy.

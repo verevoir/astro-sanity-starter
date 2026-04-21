@@ -1,249 +1,152 @@
 # Astro + Verevoir Starter
 
-A minimal Astro starter powered by [Verevoir](https://verevoir.io) — composable TypeScript libraries for structured content. No hosted backend, no API keys, no vendor lock-in.
+A working marketing site with a content admin, composed from the `@verevoir/*` packages. Clone, run, edit — you should see your first change live in the browser inside five minutes.
 
-## Quick Start
+No hosted backend, no API keys, no vendor lock-in. The database is a folder of JSON files until you decide otherwise.
+
+## Quick start
 
 ```bash
+git clone <this-repo>
+cd astro-sanity-starter
 npm install
 npm run dev
 ```
 
-Open [http://localhost:4321](http://localhost:4321). That's it — no accounts, no environment variables, no external services.
+Open [http://localhost:4321](http://localhost:4321) — that's the public site.
+Open [http://localhost:4321/admin](http://localhost:4321/admin) — that's the content admin.
 
-The admin lives at [http://localhost:4321/admin](http://localhost:4321/admin).
+The dev login picker has two identities: `admin@local` (full control) and `viewer@local` (read-only). Pick admin, edit the home page's heading, save, reload the public site. First achievement unlocked.
 
-## What's Inside
+## What ships with it
 
-A marketing site with composable page sections, all content-managed through Verevoir's schema engine and storage adapter:
+A marketing site with composable sections, all editable through the admin:
 
-- **Hero** — large heading, markdown body, call-to-action buttons
-- **Cards** — grid of feature cards with badges, images, and CTAs
-- **Logos** — animated logo strip with configurable motion
-- **Testimonials** — quote cards with author info
-- **CTA** — call-to-action section with heading and buttons
+- **Hero** — heading, markdown body, CTA buttons
+- **Cards** — grid of feature cards with badges and links
+- **Logos** — animated logo strip
+- **Testimonials** — quote cards
+- **CTA** — call-to-action with buttons
 
-Plus a working admin (`/admin`) where you can edit page metadata and site config through a generated form. Edits write through to JSON files in `data/`, so they survive restarts and can be git-tracked.
+Plus the admin itself:
 
-### Tech Stack
+- Document editor driven by `@verevoir/editor` — auto-generated forms from your schema
+- Section editor with drag-and-drop reordering, live preview iframe
+- Tag-based release scheduling — tag versions, bulk-set their publish window, let the existing `publishFrom`/`publishTo` machinery handle activation
+- Two-tier auth (admin / viewer) with a close-the-backdoor seeding flow
+- Glass theme out of the box
 
-- [Astro 6](https://astro.build) — static + server hybrid
+### Tech stack
+
+- [Astro 6](https://astro.build) — hybrid static + server
 - [@astrojs/netlify](https://docs.netlify.com/integrations/frameworks/astro/) — adapter for the admin functions
-- [@astrojs/react](https://docs.astro.build/en/guides/integrations-guide/react/) — for the editor island
+- [@astrojs/react](https://docs.astro.build/en/guides/integrations-guide/react/) — admin islands
 - [Tailwind CSS 4](https://tailwindcss.com) + [DaisyUI 5](https://daisyui.com) — public site styling
-- [@verevoir/schema](https://www.npmjs.com/package/@verevoir/schema) — content model definitions (zod 4 under the hood)
+- [@verevoir/schema](https://www.npmjs.com/package/@verevoir/schema) — content models (zod 4 under the hood)
 - [@verevoir/storage](https://www.npmjs.com/package/@verevoir/storage) — persistence interface
-- [@verevoir/editor](https://www.npmjs.com/package/@verevoir/editor) — auto-generated React forms
+- [@verevoir/editor](https://www.npmjs.com/package/@verevoir/editor) — field components + schema augmentation helpers
+- [@verevoir/admin](https://www.npmjs.com/package/@verevoir/admin) — admin shell, sections editor, tag scheduler
+- [@verevoir/access](https://www.npmjs.com/package/@verevoir/access) — identity + policy
 
-## How It Works
+## How it fits together
 
-1. **Content models** are defined in `src/schema/` using `defineBlock()` from `@verevoir/schema`
-2. **Storage** is a `BlobAdapter` (in `src/blob-adapter.ts`) backed by a pluggable `BlobStore` — the starter ships with `FilesystemBlobStore` writing JSON files to `data/`
-3. **Sample content** is seeded on first run via `src/seed.ts` (idempotent — only seeds if empty)
-4. **Public pages** are rendered by Astro components and prerendered at build time
-5. **Admin** is a server-rendered route group at `/admin` using React islands for the editor
+```
+┌──────────────────────────────────────────────┐
+│  This starter                                 │
+│  public site • admin routes • auth middleware │
+├──────────────────────────────────────────────┤
+│  @verevoir/admin       @verevoir/editor       │
+│  admin UI              field components       │
+├──────────────────────────────────────────────┤
+│  @verevoir/access      @verevoir/schema       │
+│  identity + policy     content model          │
+├──────────────────────────────────────────────┤
+│  @verevoir/storage                            │
+│  persistence adapter                          │
+└──────────────────────────────────────────────┘
+```
 
-### Key files
+Bottom-up: **schema + storage** gives you structured persistence — a content lake, usable without any UI. Add **editor** and it's a CMS. The **admin** is a shell around the editor. The **access** layer gates the admin.
+
+Features you might think of as "versioning" or "scheduled publishing" are implemented as **schema augmentation helpers** (`publishFields()`, `tagsField()`) that inject conventional fields into any block. Storage doesn't know what those fields mean; resolution functions like `isLive(data)` read them at render time.
+
+See `CLAUDE.md` for the full layering and where-things-live map. See `docs/roadmap.md` for what the starter deliberately doesn't do yet.
+
+## Key files
 
 | File | Purpose |
 |------|---------|
-| `src/schema/` | Verevoir block definitions (content types) |
-| `src/schema/registry.ts` | Maps blockType strings → BlockDefinition (used by admin) |
-| `src/blob-store.ts` | `BlobStore` interface + `FilesystemBlobStore` implementation |
-| `src/blob-adapter.ts` | `BlobAdapter` — wraps any `BlobStore` to satisfy Verevoir's `StorageAdapter` |
-| `src/storage.ts` | The single storage instance the rest of the app uses |
-| `src/seed.ts` | Sample content — edit this to change what ships with the starter |
-| `src/data/` | Read-side data fetching helpers |
-| `src/pages/[...slug].astro` | Public pages |
-| `src/pages/admin.astro` | Admin dashboard |
-| `src/pages/admin/[blockType]/[id].astro` | Document editor (server-rendered) |
-| `src/pages/api/admin/save.ts` | POST endpoint for saves (validates + merges + writes) |
-| `src/admin/EditorIsland.tsx` | React island wrapping `<BlockEditor>` |
+| `src/schema/` | Block definitions (page, siteConfig, role-assignment) and section definitions |
+| `src/schema/registry.ts` | The block registry the admin sidebar reads from |
+| `src/storage.ts` | Single storage instance used across the app |
+| `src/blob-adapter.ts`, `src/blob-store.ts` | Filesystem-backed storage — swap `store:` to change backend |
+| `src/seed.ts` | Sample content shipped with fresh clones |
+| `src/access/index.ts` | Auth adapter, role store, policy composition |
+| `src/middleware.ts` | Cookie → identity → gate `/admin/*` |
+| `src/data/page.ts` | Public-side fetchers; filters by `isLive()` so drafts don't leak |
+| `src/pages/[...slug].astro` | Public page router |
+| `src/pages/admin.astro` | Admin home |
+| `src/pages/admin/[blockType]/[id].astro` | Document editor route |
+| `src/pages/admin/tags/` | Tag scheduler routes |
+| `src/pages/admin/login.astro` + `api/admin/login.ts` | Dev login |
+| `src/pages/api/admin/save.ts` | Document save handler (with access check) |
+| `src/pages/api/admin/bulk-publish.ts` | Bulk publish-window updates driven by the tag scheduler |
+| `src/admin/` | React islands — `AdminHomeIsland`, `AdminEditorIsland`, `AdminTagsIsland`, `AdminTagSchedulerIsland` |
+| `src/components/` | Public-site section renderers |
+| `src/styles/globals.css`, `admin-theme.css` | Public + admin themes |
 | `data/*.json` | Content storage (git-trackable) |
+| `docs/` | Recipe docs (start here for "how do I...") |
 
 ## Editing content
 
 Two paths:
 
-- **Through the admin UI** — visit `/admin`, click a page, edit the form, hit Save. The JSON file in `data/` is updated immediately.
-- **By editing JSON directly** — `data/page.json` and `data/siteConfig.json` are plain JSON. Edit them in any editor; changes pick up on next request.
+- **Via the admin UI** — visit `/admin`, sign in as admin, click a page, edit, save. JSON file in `data/` is updated.
+- **By editing JSON directly** — `data/page.json` is plain JSON; edit in any editor. *Not while the dev server is running an open admin* — the next save will overwrite.
 
-> ⚠️ **The admin has no auth out of the box.** This is intentional — see [Securing the admin](#securing-the-admin) below before deploying anywhere with sensitive content.
+Both paths use the same storage adapter; the admin is a view over the filesystem, not a separate system.
 
-## Securing the admin
+## Auth
 
-The admin route group (`/admin`, `/admin/*`, `/api/admin/*`) is unprotected by default. **Add auth before deploying to production.** The recommended path is Astro middleware + [@verevoir/access](https://www.npmjs.com/package/@verevoir/access).
+Ships wired up, not a DIY exercise. The dev adapter uses hardcoded test accounts (`admin@local`, `viewer@local`). Swap for real OAuth before deploying:
 
-### Option 1: Google Sign-In (recommended)
+- [docs/authentication.md](docs/authentication.md) — the v1 flow end to end
+- [docs/seeding-the-first-admin.md](docs/seeding-the-first-admin.md) — `SEED_ADMIN_ID` env var, close-the-backdoor behaviour
+- [docs/upgrading-users.md](docs/upgrading-users.md) — how to grant someone admin rights
+- [docs/add-google-auth.md](docs/add-google-auth.md) — swap the dev adapter for Google Sign-In
 
-Most teams already have Google Workspace, so this is the path of least friction.
+## Customising
 
-**1. Install the access package and the Google peer dep**
+- [docs/add-document-types.md](docs/add-document-types.md) — add a new block type end-to-end
+- [docs/theme-the-website.md](docs/theme-the-website.md) — port the admin glass aesthetic to the public site
+- [docs/port-your-data.md](docs/port-your-data.md) — import from Sanity or Markdown; swap storage backends
 
-```bash
-npm install @verevoir/access google-auth-library
-```
-
-**2. Set environment variables**
-
-In `.env`:
-
-```
-GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-ADMIN_EMAILS=alice@example.com,bob@example.com
-SESSION_SECRET=generate-a-long-random-string
-```
-
-Get a client ID from [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → "Create OAuth client ID" → "Web application". Add `https://yoursite.com` to authorised origins and `https://yoursite.com/api/auth/google/callback` to redirect URIs.
-
-**3. Create middleware** (`src/middleware.ts`)
-
-```typescript
-import { defineMiddleware } from "astro:middleware";
-import { createGoogleAuthAdapter } from "@verevoir/access/google";
-
-const adminEmails = new Set(
-  (process.env.ADMIN_EMAILS ?? "").split(",").map((s) => s.trim()),
-);
-
-const auth = createGoogleAuthAdapter({
-  clientId: process.env.GOOGLE_CLIENT_ID!,
-});
-
-export const onRequest = defineMiddleware(async (context, next) => {
-  const isAdmin =
-    context.url.pathname.startsWith("/admin") ||
-    context.url.pathname.startsWith("/api/admin");
-
-  if (!isAdmin) return next();
-
-  const token = context.cookies.get("auth-token")?.value;
-  const identity = token ? await auth.resolve(token) : null;
-
-  const email = identity?.metadata?.email as string | undefined;
-  if (!identity || !email || !adminEmails.has(email)) {
-    return context.redirect("/login");
-  }
-
-  context.locals.identity = identity;
-  return next();
-});
-```
-
-**4. Add a sign-in page** at `/login` that renders Google's button and POSTs the resulting ID token to `/api/auth/google/callback`. The callback sets `auth-token` as an HttpOnly cookie. See the [Verevoir access guide](https://verevoir.io/docs/guides/access-control) for the full flow.
-
-That's it — every `/admin` request now goes through Google ID token verification, and only emails listed in `ADMIN_EMAILS` get through.
-
-### Option 2: Apple Sign-In
-
-```bash
-npm install @verevoir/access
-```
-
-```typescript
-import { createAppleAuthAdapter } from "@verevoir/access/apple";
-
-const auth = createAppleAuthAdapter({
-  clientId: process.env.APPLE_CLIENT_ID!,
-  // Provide a verifier — Verevoir is verifier-agnostic so you can
-  // use jose, jwt-decode, or hand-roll one.
-});
-```
-
-The middleware shape is identical to the Google example — only the adapter import changes.
-
-### Option 3: Generic OIDC (Okta, Azure AD, Auth0, Keycloak, ...)
-
-```bash
-npm install @verevoir/access
-```
-
-```typescript
-import { createOIDCAuthAdapter } from "@verevoir/access/oidc";
-
-const auth = createOIDCAuthAdapter({
-  issuer: process.env.OIDC_ISSUER!,        // e.g. https://your-tenant.okta.com
-  clientId: process.env.OIDC_CLIENT_ID!,
-  // The adapter handles JWKS fetching and token verification.
-});
-```
-
-Works with any OIDC-compliant identity provider — Okta, Azure AD, Auth0, Keycloak, Authentik, Zitadel, etc.
-
-### Option 4: Test accounts (for local dev only)
-
-```typescript
-import { createTestAuthAdapter } from "@verevoir/access/test-accounts";
-
-const auth = createTestAuthAdapter({
-  accounts: [
-    { token: "alice-token", identity: { id: "alice", roles: ["admin"], metadata: { email: "alice@example.com" } } },
-  ],
-});
-```
-
-Hard-coded users for development. Never use in production.
-
-### Role-based access (optional)
-
-If you want different admin roles (e.g. editors vs admins), use `@verevoir/access/role-store` to persist user → roles mappings via your existing `BlobAdapter`. See the [access control guide](https://verevoir.io/docs/guides/access-control) for examples.
-
-## Customising content
-
-Edit `src/seed.ts` to change the site content the starter ships with. The seed only runs if the data files don't exist yet — once you have content in `data/`, the seed is a no-op.
-
-To change what fields are editable in the admin, edit `src/schema/page.ts` (or add new block files) and register them in `src/schema/registry.ts`.
-
-## Storage backends
-
-The starter uses `FilesystemBlobStore` — JSON files on local disk, git-trackable. The `BlobAdapter` accepts any `BlobStore` though, so swapping the backend is a one-line change in `src/storage.ts`:
-
-```typescript
-// Local filesystem (default)
-new BlobAdapter({ store: new FilesystemBlobStore({ dataDir: "./data" }) })
-
-// Google Cloud Storage (when GcsBlobStore is added)
-new BlobAdapter({ store: new GcsBlobStore({ bucket: "my-content" }) })
-
-// S3 / R2 / MinIO / Spaces (when S3BlobStore is added)
-new BlobAdapter({ store: new S3BlobStore({ bucket: "my-content" }) })
-
-// Or for production at scale, drop BlobAdapter entirely:
-import { PostgresAdapter } from "@verevoir/storage";
-new PostgresAdapter({ connectionString: process.env.DATABASE_URL! })
-```
-
-The schema and the rest of the app don't change — only `src/storage.ts`.
+All recipes in [docs/](docs/).
 
 ## Deploying
 
-Two modes, **same source tree, no config swap**:
+Two modes, same source tree:
 
 ### Mode A — Netlify (admin works)
 
 ```bash
 npm run build
-# Deploy via netlify-cli, GitHub integration, or drag-and-drop
 ```
 
-Public pages are prerendered HTML. Admin routes (`/admin`, `/api/admin/*`) are bundled as Netlify functions. Edits made through the admin write through to the storage backend you've configured in `src/storage.ts`.
+Public pages are prerendered HTML. Admin routes are bundled as Netlify functions. Edits via the admin write through to whatever storage you've configured in `src/storage.ts`.
 
-### Mode B — static export (admin doesn't function)
+### Mode B — static tarball (admin not included)
 
 ```bash
 npm run build:static
 # → static-build.tar.gz
 ```
 
-Builds the same project, then tarballs just the static portion of the output (`dist/`) into `static-build.tar.gz`. Drop that tarball on any object store — S3, GCS, R2, Cloudflare Pages, GitHub Pages, etc. Public pages work everywhere; admin is unavailable (the function code isn't included).
+Public HTML only. Drop the tarball on any object store — S3, GCS, R2, Cloudflare Pages, GitHub Pages. No functions, no cold starts, basically free hosting. Edit content via `npm run dev`'s admin, commit `data/*.json`, rebuild. See `docs/roadmap.md` for when each path fits.
 
-This is useful when:
-- You want a fully static deploy with no functions / no cold starts
-- You're git-managing content and don't need a runtime editor
-- You want to deploy the same site to multiple hosts (one for production, one as a backup mirror)
-- You want zero hosting cost (object stores are basically free at low traffic)
+## For agents
 
-The trade-off is obvious: no live editing on a static-only deploy. Edit content via the dev server's admin (`npm run dev`), commit `data/*.json` to git, then rebuild and re-export. Or move to Mode A.
+This starter is written to be productive under agent-assisted development — Claude or equivalent. See [`CLAUDE.md`](CLAUDE.md) for the layering and conventions, [`llms.txt`](llms.txt) for the curated read order. Every `@verevoir/*` package has its own `CLAUDE.md` / `llms.txt` for deeper drills.
 
 ## License
 
