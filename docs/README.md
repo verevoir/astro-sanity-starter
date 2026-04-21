@@ -13,7 +13,7 @@ How-to guides for the things you'll touch most often. Each doc is self-contained
 
 - [**add-document-types.md**](./add-document-types.md) — define a new block, register with the admin, render on the public site
 - [**port-your-data.md**](./port-your-data.md) — import from Sanity, Markdown, or swap storage adapters
-- [**from-sanity.md**](./from-sanity.md) — strategic comparison, what's gained and lost, and the SanityAdapter migration sequence
+- [**from-headless-cms.md**](./from-headless-cms.md) — strategic comparison vs Sanity, Contentful, and similar hosted vendors; what's gained and lost; the adapter-based migration sequence
 
 ## Design
 
