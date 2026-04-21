@@ -6,6 +6,7 @@ import {
   boolean,
   array,
   object,
+  link,
 } from "@verevoir/schema";
 
 /**
@@ -40,6 +41,14 @@ export const cardsSection = defineBlock({
         body: richText("Body").hint(
           "Markdown supported. Keep to 1-3 sentences.",
         ),
+        ctaLabel: text("CTA label")
+          .optional()
+          .hint("Optional 'learn more' link label, e.g. 'Read the docs'."),
+        ctaUrl: link("CTA URL")
+          .optional()
+          .hint(
+            "Where the CTA link points. Internal page or external URL — auto-detected.",
+          ),
         badge: object("Badge", {
           label: text("Label").hint("Short uppercase label."),
           theme: select("Theme", ["primary", "secondary", "accent", "neutral"]),

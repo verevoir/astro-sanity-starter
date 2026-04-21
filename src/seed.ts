@@ -16,7 +16,11 @@ export async function seed() {
       },
       navLinks: [
         { _type: "actionLink", label: "Features", url: "#features" },
-        { _type: "actionLink", label: "Testimonials", url: "#testimonials" },
+        {
+          _type: "actionLink",
+          label: "GitHub",
+          url: "https://github.com/verevoir",
+        },
         {
           _type: "actionButton",
           label: "Get Started",
@@ -67,56 +71,73 @@ export async function seed() {
         width: "full",
       },
 
-      // Features cards
+      // Benefits cards — each links to the supporting npm package or
+      // doc rather than a fictional source. Drop-in for the testimonials
+      // section that used to live below; same conceptual job (here's
+      // what's good about Verevoir) without the credibility cost of
+      // fake quotes.
       {
         _type: "cardsSection",
         heading: "Why Verevoir?",
-        body: "Everything you need to build content-driven applications, without the platform tax.",
+        body: "Composable libraries for the parts of an app a hosted CMS would lock you into. Each card links to the package or doc that proves it out.",
         columns: "three",
         items: [
           {
-            heading: "TypeScript-First Schemas",
+            heading: "TypeScript-first schemas",
             body: "Define content shapes with `defineBlock()`. Get validators, types, and editor hints — all from one definition.",
-            badge: { label: "Schema Engine", theme: "primary" },
+            ctaLabel: "Read the schema docs",
+            ctaUrl: "https://www.npmjs.com/package/@verevoir/schema",
+            badge: { label: "Schema engine", theme: "primary" },
             theme: "light",
             textAlign: "center",
             hasBorder: true,
           },
           {
-            heading: "Any Database",
-            body: "PostgreSQL today, SQLite tomorrow. The `StorageAdapter` interface means you pick the database — and you can switch.",
+            heading: "Pick your database",
+            body: "Postgres today, SQLite tomorrow, filesystem for git-tracked content. The `StorageAdapter` interface lets you swap without touching the rest of the app.",
+            ctaLabel: "Storage on npm",
+            ctaUrl: "https://www.npmjs.com/package/@verevoir/storage",
             badge: { label: "Storage", theme: "secondary" },
             theme: "light",
             textAlign: "center",
             hasBorder: true,
           },
           {
-            heading: "Drop-In Editor",
-            body: "Lightweight React components for content editing. Rich text, field validation, block forms — ready to embed in your admin UI.",
+            heading: "Drop-in editor",
+            body: "Lightweight React components — fields, sections, smart datetime, tag scheduler — ready to embed in your admin.",
+            ctaLabel: "Editor on npm",
+            ctaUrl: "https://www.npmjs.com/package/@verevoir/editor",
             badge: { label: "Editor", theme: "accent" },
             theme: "light",
             textAlign: "center",
             hasBorder: true,
           },
           {
-            heading: "Auth & Access Control",
-            body: "Google OAuth, Apple Sign-In, OIDC, API keys. Role-based policies and workflow state machines — all standalone.",
+            heading: "Auth + access control",
+            body: "Google, Apple, OIDC, API keys. Role-based policies, persistent role assignments, workflow state machines — all composable.",
+            ctaLabel: "Access on npm",
+            ctaUrl: "https://www.npmjs.com/package/@verevoir/access",
             badge: { label: "Access", theme: "primary" },
             theme: "light",
             textAlign: "center",
             hasBorder: true,
           },
           {
-            heading: "Commerce Built In",
-            body: "Products, baskets, orders, subscriptions. Pluggable pricing and tax engines with sensible defaults. Stripe adapter included.",
+            heading: "Commerce included",
+            body: "Products, baskets, orders, subscriptions. Pluggable pricing and tax engines. Stripe adapter as a separate package — bring or skip.",
+            ctaLabel: "Commerce on npm",
+            ctaUrl: "https://www.npmjs.com/package/@verevoir/commerce",
             badge: { label: "Commerce", theme: "secondary" },
             theme: "light",
             textAlign: "center",
             hasBorder: true,
           },
           {
-            heading: "Zero Lock-In",
-            body: "Every package works standalone. Adopt one, adopt all — your call. No all-or-nothing, no migration cliff.",
+            heading: "No vendor lock-in",
+            body: "The data lives where you put it. Migrate from a hosted CMS via an adapter, dual-write, then cut over — no big-bang rewrite.",
+            ctaLabel: "How to migrate",
+            ctaUrl:
+              "https://github.com/verevoir/astro-sanity-starter/blob/main/docs/from-headless-cms.md",
             badge: { label: "Philosophy", theme: "accent" },
             theme: "light",
             textAlign: "center",
@@ -165,61 +186,6 @@ export async function seed() {
         ],
         motion: "moveToLeft",
         theme: "light",
-        width: "full",
-      },
-
-      // Testimonials
-      {
-        _type: "testimonialsSection",
-        heading: "What developers are saying",
-        columns: "two",
-        items: [
-          {
-            quote:
-              '"Switched from Sanity to Verevoir in a weekend. Same content models, but now I own the database and the deploy. No more usage-based pricing surprises."',
-            author: {
-              name: "Alex Chen",
-              title: "Full-Stack Developer",
-              company: { name: "Indie Studio" },
-            },
-            theme: "light",
-            hasBorder: true,
-          },
-          {
-            quote:
-              '"The schema engine is brilliant — define once, get TypeScript types, validation, and editor UI for free. It\'s what I always wanted from a headless CMS."',
-            author: {
-              name: "Sarah Mitchell",
-              title: "Frontend Architect",
-              company: { name: "Scale Labs" },
-            },
-            theme: "light",
-            hasBorder: true,
-          },
-          {
-            quote:
-              '"Commerce, bookings, content — all as npm packages. No more stitching together five different SaaS products. The code is refreshingly simple."',
-            author: {
-              name: "James Park",
-              title: "CTO",
-              company: { name: "EventFlow" },
-            },
-            theme: "light",
-            hasBorder: true,
-          },
-          {
-            quote:
-              '"We needed multi-tenant accounts with Stripe subscriptions. Verevoir had it out of the box — accounts, commerce, stripe adapter. Shipped in days, not weeks."',
-            author: {
-              name: "Maria Santos",
-              title: "Lead Engineer",
-              company: { name: "Launchpad" },
-            },
-            theme: "light",
-            hasBorder: true,
-          },
-        ],
-        theme: "dark",
         width: "full",
       },
 

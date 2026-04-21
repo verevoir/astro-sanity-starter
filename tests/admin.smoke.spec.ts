@@ -53,45 +53,52 @@ test.describe('Page editor', () => {
     await expect(page).toHaveURL(/\/admin\/page\//);
   });
 
-  test('testimonials columns dropdown lists 1-4', async ({ page }) => {
+  test('cards columns dropdown lists one/two/three', async ({ page }) => {
+    // Originally written against the testimonials section (which had a
+    // 1-4 columns enum). Testimonials was dropped from the seed when
+    // the home page moved to a benefits-only model — same regression
+    // shape (Astro `client:only` schema serialisation) is now guarded
+    // by the cards section's columns dropdown, which has 1-3 enum
+    // values. Either reproduces the bug if it returns.
     await page
       .locator('[data-sections-item-toggle]')
-      .filter({ hasText: 'Testimonials' })
+      .filter({ hasText: 'Cards grid' })
       .first()
       .click();
-    // Find the Columns select inside the open testimonials body
-    // specifically — just filtering on legend 'Columns' could grab a
-    // cards section's dropdown if the user had that open too.
-    const testimonialsBody = page.locator(
+    const openBody = page.locator(
       '[data-sections-item][data-sections-item-open="true"]',
     );
-    const columnsSelect = testimonialsBody
-      .locator('fieldset', { has: page.locator('legend', { hasText: 'Columns' }) })
+    const columnsSelect = openBody
+      .locator('fieldset', {
+        has: page.locator('legend', { hasText: 'Columns' }),
+      })
       .locator('select');
     await expect(columnsSelect).toBeVisible();
-    const optionValues = await columnsSelect.locator('option').evaluateAll(
-      (opts) => opts.map((o) => (o as HTMLOptionElement).value),
-    );
-    // Includes the placeholder ('') plus the four enum values.
+    const optionValues = await columnsSelect
+      .locator('option')
+      .evaluateAll((opts) =>
+        opts.map((o) => (o as HTMLOptionElement).value),
+      );
     expect(optionValues).toEqual(
-      expect.arrayContaining(['one', 'two', 'three', 'four']),
+      expect.arrayContaining(['one', 'two', 'three']),
     );
   });
 
-  test('testimonials list rows clip rather than overflow column', async ({ page }) => {
+  test('hero CTA list rows clip rather than overflow column', async ({ page }) => {
+    // The CTA list inside the hero section uses TableArrayField (the
+    // list+modal pattern with `[data-list-array]`). Original failure
+    // mode (already fixed): fieldset's default `min-width: min-content`
+    // let long item content push the list past the editor column,
+    // hiding the up/down controls. Hero's CTA array is the seeded
+    // example of a TableArrayField in the home page; if that breaks
+    // again, this test fails fast.
     await page
       .locator('[data-sections-item-toggle]')
-      .filter({ hasText: 'Testimonials' })
+      .filter({ hasText: 'Hero' })
       .first()
       .click();
-    // The list lives inside a fieldset labelled "Testimonials".
-    // Its <ol data-list-array> should not be wider than the
-    // fieldset that contains it. Failure mode (the bug we just
-    // fixed): fieldset's default `min-width: min-content` lets a
-    // long unbroken testimonial quote push the list past the
-    // editor column, hiding the up/down controls.
     const fieldset = page.locator('fieldset', {
-      has: page.locator('legend', { hasText: 'Testimonials' }),
+      has: page.locator('legend', { hasText: /Calls to action/i }),
     });
     const list = fieldset.locator('[data-list-array]');
     await expect(list).toBeVisible();
@@ -101,7 +108,6 @@ test.describe('Page editor', () => {
     ]);
     expect(fieldsetBox).not.toBeNull();
     expect(listBox).not.toBeNull();
-    // Allow a 2px slop for sub-pixel rounding.
     expect(listBox!.width).toBeLessThanOrEqual(fieldsetBox!.width + 2);
   });
 });

@@ -24,8 +24,8 @@
           },
           {
             "_type": "actionLink",
-            "label": "Testimonials",
-            "url": "#testimonials"
+            "label": "GitHub",
+            "url": "https://github.com/verevoir"
           },
           {
             "_type": "actionButton",

@@ -9,7 +9,29 @@ interface Props extends Card {
     class?: string;
 }
 
-const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: className } = Astro.props;
+const {
+    badge,
+    heading,
+    body,
+    cta,
+    ctaLabel,
+    ctaUrl,
+    image,
+    theme,
+    textAlign,
+    hasBorder,
+    class: className,
+} = Astro.props;
+
+// Compose the CTA list. Backwards-compatible: legacy `cta` array
+// still wins. If absent, fall back to the simpler ctaLabel + ctaUrl
+// pair the cards schema now exposes.
+const actions =
+    cta && cta.length > 0
+        ? cta
+        : ctaLabel && ctaUrl
+            ? [{ _type: 'actionLink' as const, label: ctaLabel, url: ctaUrl }]
+            : undefined;
 ---
 
 <div
@@ -34,9 +56,9 @@ const { badge, heading, body, cta, image, theme, textAlign, hasBorder, class: cl
         }
         {body && <div class="markdown" set:html={marked.parse(body)} />}
         {
-            cta && cta.length > 0 && (
+            actions && actions.length > 0 && (
                 <div class="card-actions items-center">
-                    {cta.map((item) => (
+                    {actions.map((item) => (
                         <Action
                             action={item}
                             class:list={[item._type === 'actionLink' ? 'font-bold underline hover:no-underline' : 'px-4 py-2.5 h-auto min-h-0']}
