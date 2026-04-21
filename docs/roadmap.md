@@ -71,6 +71,16 @@ Mutations are unaudited. Who changed what, when, is invisible.
 
 *Forward path:* A scheduled function (Netlify / Vercel cron) that queries `storage.list(..., { where: { publishFrom: ... }})` and fires side-effects when entries cross the threshold. Same storage, same data.
 
+## Known-not-to-do
+
+Explicit commitments about things the starter should actively *not* do, usually because they're bugs we've seen elsewhere.
+
+### Preview iframe must not silently navigate
+
+The admin's document editor renders a live preview iframe via the block's `preview: (data) => url` registry entry. When a link inside that iframe is clicked, the outcome must be one of: do nothing (inert), full navigation of the whole editor page (only if no unsaved changes), or an explicit confirmation prompt. What must *not* happen is the iframe silently navigating to a different URL while leaving the editor form in place — that desyncs the author's form from the document the preview is showing, without any signal that the context has changed.
+
+Sanity has a variant of this bug. The iframe's `sandbox` attribute should default to `allow-scripts` only (no `allow-top-navigation`) so links can't follow. Upgrade only if a concrete use case demands it, and only behind confirmation + unsaved-changes check.
+
 ## Adjacent docs
 
 - `authentication.md` — the v1 access flow
