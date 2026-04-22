@@ -7,13 +7,13 @@
         "src": "/favicon.svg"
       },
       "header": {
-        "title": "Verevoir Starter",
+        "title": "Verevoir",
         "logo": {
-          "src": "/images/logo.svg",
-          "alt": "Verevoir Starter",
+          "src": "/images/verevoir-wide.svg",
+          "alt": "Verevoir",
           "dimensions": {
-            "width": 140,
-            "height": 32
+            "width": 152,
+            "height": 50
           }
         },
         "navLinks": [

@@ -8,11 +8,11 @@ export async function seed() {
   await storage.create("siteConfig", {
     favicon: { src: "/favicon.svg" },
     header: {
-      title: "Verevoir Starter",
+      title: "Verevoir",
       logo: {
-        src: "/images/logo.svg",
-        alt: "Verevoir Starter",
-        dimensions: { width: 140, height: 32 },
+        src: "/images/verevoir-wide.svg",
+        alt: "Verevoir",
+        dimensions: { width: 152, height: 50 },
       },
       navLinks: [
         { _type: "actionLink", label: "Features", url: "#features" },
