@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { storage } from "@/storage";
 import { ensureSeeded } from "@data/init";
 import { policy } from "@/access";
+import { pageVersionStore } from "@/server/page-versions";
 
 export const prerender = false;
 
@@ -16,6 +17,14 @@ interface BulkPublishBody {
  * ids. Driven by the admin's TagScheduler — the tag lookup itself
  * happened server-side when the page loaded; this route just takes
  * the ids and the new window.
+ *
+ * Versioning behaviour: for `page` documents, the route both sets
+ * the temporal window AND promotes the version to `published`
+ * (which archives any prior published version of the same slug).
+ * Without the promotion, scheduling a draft would leave it as a
+ * draft — visible in admin but never live, defeating the point of
+ * "schedule this tag for X". For non-versioned block types the
+ * route falls through to the simple window update.
  *
  * The middleware guarantees an authenticated identity on locals
  * (unauth'd requests are redirected to /admin/login before this
@@ -61,7 +70,17 @@ export const POST: APIRoute = async ({ request, locals }) => {
       ...(publishTo !== undefined ? { publishTo } : {}),
     };
     try {
+      // Update the data first (window + any other fields).
       await storage.update(id, nextData);
+      // For versioned page docs, also promote draft → published so
+      // the schedule actually fires. Other block types just need
+      // the window set.
+      if (
+        existing.blockType === "page" &&
+        (existing.data as { status?: string }).status === "draft"
+      ) {
+        await pageVersionStore.publish(id);
+      }
       updated += 1;
     } catch (e) {
       errors.push({ id, reason: e instanceof Error ? e.message : "update failed" });
