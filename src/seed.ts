@@ -35,14 +35,17 @@ export async function seed() {
     titleSuffix: "Verevoir Starter",
   });
 
-  // Home page with composable sections. status='published' so the
-  // public renderer's isLive() check passes for the seeded content
-  // — without it, every freshly-cloned starter would 404 the home
-  // page until the user discovered the publish workflow.
+  // Home page with composable sections. status='published' + the
+  // version primitives (`version`, `updatedAt`) so the version
+  // store treats this as the live v1 of `/`. Without status, the
+  // public renderer's isLive() check would 404 every freshly-cloned
+  // starter until the user discovered the publish workflow.
   await storage.create("page", {
     title: "Home",
     slug: "/",
     status: "published",
+    version: 1,
+    updatedAt: Date.now(),
     tags: [],
     addTitleSuffix: true,
     metaTitle: "Verevoir — Content, Commerce & Editing as Composable Libraries",

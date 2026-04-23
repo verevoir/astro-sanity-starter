@@ -196,9 +196,11 @@
         }
       ],
       "status": "published",
-      "tags": []
+      "tags": [],
+      "version": 1,
+      "updatedAt": 1776926260525
     },
     "createdAt": "2026-04-10T04:50:45.359Z",
-    "updatedAt": "2026-04-19T19:48:17.739Z"
+    "updatedAt": "2026-04-23T06:37:40.525Z"
   }
 ]

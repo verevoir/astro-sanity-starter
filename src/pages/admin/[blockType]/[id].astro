@@ -7,6 +7,9 @@ import { storage } from "@/storage";
 import { ensureSeeded } from "@data/init";
 import { blocks, sections } from "@schema/registry";
 import { AdminEditorIsland } from "@/admin/AdminEditorIsland";
+import type { VersioningData } from "@/admin/AdminEditorIsland";
+import { pageVersionStore } from "@/server/page-versions";
+import type { VersionRecord } from "@verevoir/editor/version-store";
 
 export const prerender = false;
 
@@ -68,6 +71,28 @@ const displayName =
 
 // Sidebar context — same view model the home page uses.
 const groups = await loadAdminGroups({ storage, blocks });
+
+// Versioning bundle for blockType=page. Other types render without
+// versioning — DocumentEditor falls back to the single-doc Save
+// flow when `versioning` is omitted.
+let versioningData: VersioningData | undefined;
+if (blockType === "page") {
+    const record = (await pageVersionStore.getById(id)) as
+        | VersionRecord
+        | null;
+    if (record) {
+        const versions =
+            (await pageVersionStore.listVersions(record.slug)) as VersionRecord[];
+        versioningData = {
+            record,
+            versions,
+            publishUrl: "/api/admin/page-publish",
+            unpublishUrl: "/api/admin/page-unpublish",
+            newVersionUrl: "/api/admin/page-new-version",
+            versionPath: `/admin/${blockType}`,
+        };
+    }
+}
 ---
 
 <!doctype html>
@@ -102,6 +127,7 @@ const groups = await loadAdminGroups({ storage, blocks });
                 initialSections,
                 linkablePages,
             }}
+            versioningData={versioningData}
         />
     </body>
 </html>
