@@ -1,3 +1,16 @@
+/*
+ * Layer order first, before anything that declares layers of its own —
+ * the first @layer statement wins, and Tailwind's own import declares
+ * `theme, base, components, utilities`.
+ *
+ * `vv` holds the whole of @verevoir/theme (0.2.0 and up), and it goes
+ * first so Tailwind and DaisyUI outrank it. The theme carries a universal
+ * reset that zeroes margin and padding; while it shipped unlayered that
+ * reset beat every utility in `@layer utilities`, which in Slinqi meant
+ * `mx-auto` and horizontal padding silently did nothing.
+ */
+@layer vv, theme, base, components, utilities;
+
 @import 'tailwindcss';
 @import '@verevoir/theme';
 @plugin "daisyui";

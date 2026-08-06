@@ -20,7 +20,7 @@
     "@verevoir/editor": "^1.10.1",
     "@verevoir/schema": "^1.5.2",
     "@verevoir/storage": "^1.1.0",
-    "@verevoir/theme": "^0.1.0",
+    "@verevoir/theme": "^0.2.0",
     "astro": "^7.0.3",
     "astro-icon": "^1.1.5",
     "marked": "^18.0.5",
